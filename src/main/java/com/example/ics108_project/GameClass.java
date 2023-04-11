@@ -1,11 +1,17 @@
 package com.example.ics108_project;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -29,6 +35,10 @@ public class GameClass extends Application {
         Image iconImage = new Image("com/example/ics108_project/AppleLogo.PNG");
         stage.getIcons().add(iconImage);
 
+        //Change dimensions
+        stage.setWidth(1000);
+        stage.setHeight(500);
+
         //Show the stage
         stage.show();
     }
@@ -42,12 +52,26 @@ public class GameClass extends Application {
     {
         //Ziad's Part
         //Create Scene and return it to the start function
-        Pane mainPane = new Pane();
-        File file = new File("src\\main\\resources\\PinkPanther.mp3");
-        Media media = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setAutoPlay(true);
+        BorderPane mainPane = new BorderPane();
 
+        //Making small panes to add to the big pane at the end
+        HBox topBox = new HBox();
+
+        topBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.setSpacing(500);
+
+        //Add game name
+        Text gameName = new Text("Ap-FALL-E");
+        topBox.getChildren().add(gameName);
+
+        //Add music to top horizontal pane
+        ImageView musicImageView = backGroundMusic();
+        HBox.setHgrow(musicImageView,Priority.ALWAYS);
+        topBox.getChildren().add(musicImageView);
+
+        //Add top pane to main pane
+        mainPane.setTop(topBox);
+        mainPane.setStyle("color: red");
         Scene menuScene = new Scene(mainPane);
 
         return menuScene;
@@ -64,4 +88,34 @@ public class GameClass extends Application {
 
         return gameScene;
     }
+
+    private static ImageView backGroundMusic()
+    {
+        //Add Background music
+        File file = new File("src\\main\\resources\\PinkPanther.mp3");
+        Media media = new Media(file.toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+
+        //Adding music icon to turn the music on and off
+        Image musicImage = new Image("music.png");
+        Image musicOff = new Image("MuteMusic.png");
+        ImageView musicImageView = new ImageView(musicImage);
+        musicImageView.setFitWidth(100);
+        musicImageView.setFitHeight(100);
+        musicImageView.setOnMouseClicked(event -> {
+            if(mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING)
+            {
+                mediaPlayer.pause();
+                musicImageView.setImage(musicOff);
+            }
+            else
+            {
+                mediaPlayer.play();
+                musicImageView.setImage(musicImage);
+            }
+        });
+        return musicImageView;
+    }
+
 }
