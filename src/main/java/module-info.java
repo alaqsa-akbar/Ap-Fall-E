@@ -1,6 +1,7 @@
 module com.example.ics108_project {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.media;
 
 
     opens com.example.ics108_project to javafx.fxml;
