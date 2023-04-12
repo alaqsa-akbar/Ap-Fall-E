@@ -1,5 +1,8 @@
 package com.example.ics108_project;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,8 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,12 +64,12 @@ public class GameClass extends Application {
         //Making small panes to add to the big pane at the end
         HBox topBox = new HBox();
         topBox.setAlignment(Pos.TOP_RIGHT);
-        topBox.setSpacing(480);
+        topBox.setSpacing(420);
 
         //Add music and game name to top horizontal pane
         ImageView mainImage = new ImageView("ZiadAppleLogo.png");
-        mainImage.setFitHeight(250);
-        mainImage.setFitWidth(250);
+        mainImage.setFitHeight(350);
+        mainImage.setFitWidth(350);
         ImageView musicImageView = backGroundMusic();
 
         HBox.setHgrow(musicImageView,Priority.ALWAYS);
@@ -81,23 +88,33 @@ public class GameClass extends Application {
 
 
         //Add the buttons to the center
+
+        //Start Button
         ImageView startImage = new ImageView("StartButton.png");
         startImage.setFitHeight(110);
         startImage.setFitWidth(200);
         Button startButton = new Button("",startImage);
-        startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");
+        startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
 
-
+        //Quit Button
         ImageView quitImage = new ImageView("QuitButton.png");
         quitImage.setFitHeight(90);
         quitImage.setFitWidth(180);
         Button quitButton = new Button("",quitImage);
-        quitButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");
-        quitButton.setOnAction(e -> Platform.exit());
+        quitButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        quitButton.setOnAction(e -> Platform.exit());//Exit program when clicked
 
+        //Add Buttons To Pane
         VBox buttons = new VBox(startButton,quitButton);
         mainPane.setCenter(buttons);
         buttons.setAlignment(Pos.CENTER);
+
+        Text aboutText = new Text("Ap-FALL-E ICS 108 Project by Al Aqsa Akbar and Ziad Al-Alami");
+        aboutText.setFill(Paint.valueOf("blue"));
+        aboutText.setFont(Font.font("Rockwell Extra Bold"));
+        mainPane.setBottom(aboutText);
+        BorderPane.setAlignment(aboutText,Pos.BOTTOM_CENTER);
+
 
         return new Scene(mainPane);
 
