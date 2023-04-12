@@ -37,7 +37,7 @@ public class GameClass extends Application {
 
         //Change dimensions
         stage.setWidth(1000);
-        stage.setHeight(500);
+        stage.setHeight(600);
 
         //Show the stage
         stage.show();
@@ -56,25 +56,31 @@ public class GameClass extends Application {
 
         //Making small panes to add to the big pane at the end
         HBox topBox = new HBox();
-
         topBox.setAlignment(Pos.TOP_RIGHT);
         topBox.setSpacing(500);
 
-        //Add game name
-        Text gameName = new Text("Ap-FALL-E");
-        topBox.getChildren().add(gameName);
-
-        //Add music to top horizontal pane
+        //Add music and game name to top horizontal pane
+        ImageView mainImage = new ImageView("AppleLogoNoBG.png");
+        mainImage.setFitHeight(50);
+        mainImage.setFitWidth(50);
         ImageView musicImageView = backGroundMusic();
         HBox.setHgrow(musicImageView,Priority.ALWAYS);
-        topBox.getChildren().add(musicImageView);
+        topBox.getChildren().addAll(mainImage,musicImageView);
+
+        //Set background image
+        Image image = new Image("Background.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(1.0,1.0,true,true,false,false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        mainPane.setBackground(background);
+
+        //
+        
 
         //Add top pane to main pane
         mainPane.setTop(topBox);
-        mainPane.setStyle("color: red");
-        Scene menuScene = new Scene(mainPane);
 
-        return menuScene;
+        return new Scene(mainPane);
 
     }
 
@@ -92,17 +98,19 @@ public class GameClass extends Application {
     private static ImageView backGroundMusic()
     {
         //Add Background music
-        File file = new File("src\\main\\resources\\PinkPanther.mp3");
+        File file = new File("src\\main\\resources\\SuperMario.mp3");
         Media media = new Media(file.toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setAutoPlay(true);
 
         //Adding music icon to turn the music on and off
-        Image musicImage = new Image("music.png");
-        Image musicOff = new Image("MuteMusic.png");
+        Image musicImage = new Image("musicNoBG.png");
+        Image musicOff = new Image("muteMusicNoBG.png");
+
         ImageView musicImageView = new ImageView(musicImage);
-        musicImageView.setFitWidth(100);
-        musicImageView.setFitHeight(100);
+        musicImageView.setFitWidth(50);
+        musicImageView.setFitHeight(50);
+        mediaPlayer.setVolume(0.1);
         musicImageView.setOnMouseClicked(event -> {
             if(mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING)
             {
@@ -117,5 +125,4 @@ public class GameClass extends Application {
         });
         return musicImageView;
     }
-
 }
