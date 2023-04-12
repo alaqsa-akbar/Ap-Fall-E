@@ -1,12 +1,7 @@
 package com.example.ics108_project;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,17 +14,11 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.util.Duration;
-
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class GameClass extends Application {
     @Override
-    public void start(Stage stage) throws IOException,URISyntaxException {
+    public void start(Stage stage) {
         //Final Part (At the end)
         Scene menuScene = mainMenuScene();
         Scene gameScene = gameScene();
@@ -55,7 +44,7 @@ public class GameClass extends Application {
     }
 
 
-    private static Scene mainMenuScene() throws URISyntaxException
+    private static Scene mainMenuScene()
     {
         //Ziad's Part
         //Create Scene and return it to the start function
