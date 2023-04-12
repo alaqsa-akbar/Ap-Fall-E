@@ -1,6 +1,7 @@
 package com.example.ics108_project;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -36,8 +37,7 @@ public class GameClass extends Application {
         stage.getIcons().add(iconImage);
 
         //Change dimensions
-        stage.setWidth(1000);
-        stage.setHeight(600);
+        stage.setFullScreen(true);
 
         //Show the stage
         stage.show();
@@ -57,14 +57,16 @@ public class GameClass extends Application {
         //Making small panes to add to the big pane at the end
         HBox topBox = new HBox();
         topBox.setAlignment(Pos.TOP_RIGHT);
-        topBox.setSpacing(500);
+        topBox.setSpacing(480);
 
         //Add music and game name to top horizontal pane
-        ImageView mainImage = new ImageView("AppleLogoNoBG.png");
-        mainImage.setFitHeight(50);
-        mainImage.setFitWidth(50);
+        ImageView mainImage = new ImageView("ZiadAppleLogo.png");
+        mainImage.setFitHeight(250);
+        mainImage.setFitWidth(250);
         ImageView musicImageView = backGroundMusic();
+
         HBox.setHgrow(musicImageView,Priority.ALWAYS);
+        HBox.setHgrow(mainImage, Priority.ALWAYS);
         topBox.getChildren().addAll(mainImage,musicImageView);
 
         //Set background image
@@ -74,11 +76,28 @@ public class GameClass extends Application {
         Background background = new Background(backgroundImage);
         mainPane.setBackground(background);
 
-        //
-        
-
         //Add top pane to main pane
         mainPane.setTop(topBox);
+
+
+        //Add the buttons to the center
+        ImageView startImage = new ImageView("StartButton.png");
+        startImage.setFitHeight(110);
+        startImage.setFitWidth(200);
+        Button startButton = new Button("",startImage);
+        startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");
+
+
+        ImageView quitImage = new ImageView("QuitButton.png");
+        quitImage.setFitHeight(90);
+        quitImage.setFitWidth(180);
+        Button quitButton = new Button("",quitImage);
+        quitButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");
+        quitButton.setOnAction(e -> Platform.exit());
+
+        VBox buttons = new VBox(startButton,quitButton);
+        mainPane.setCenter(buttons);
+        buttons.setAlignment(Pos.CENTER);
 
         return new Scene(mainPane);
 
@@ -108,8 +127,9 @@ public class GameClass extends Application {
         Image musicOff = new Image("muteMusicNoBG.png");
 
         ImageView musicImageView = new ImageView(musicImage);
-        musicImageView.setFitWidth(50);
-        musicImageView.setFitHeight(50);
+        musicImageView.setFitWidth(70);
+        musicImageView.setFitHeight(70);
+        musicImageView.setStyle("-fx-cursor: hand;");
         mediaPlayer.setVolume(0.1);
         musicImageView.setOnMouseClicked(event -> {
             if(mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING)
