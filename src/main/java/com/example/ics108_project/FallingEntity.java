@@ -1,47 +1,66 @@
 package com.example.ics108_project;
 
+import javafx.animation.TranslateTransition;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
-import javafx.scene.paint.Paint;
+import javafx.util.Duration;
 
-public class FallingEntity {
+/**
+ * Class for objects that fall during the game. Objects can be
+ * clicked and clicking them rewards the player with points
+ * depending on the score that the object has. The higher the
+ * score the faster the object falling will be. The class is a
+ * subclass of {@code Circle}.
+ */
+public class FallingEntity extends Circle {
     private final int score;
     private final int speed;
-    private final double radius;
-    Circle circle;
 
+    /**
+     * Constructs a {@code FallingEntity} with a circle shape
+     * and a radius of 65, score of {@code score}, and a speed
+     * of {@code 2 * score}
+     * @param score the number of points the player will receive
+     *              if he clicks on the entity
+     */
     public FallingEntity(int score) {
+        super();
         this.score = score;
         this.speed = score * 2;
-        this.radius = 200;
-        createCircle();
+        double radius = 65;
+        setRadius(radius);
+        setOnMouseClicked(new EntityClickedEventHandler());
     }
 
-    public Circle getCircle() {
-        return circle;
-    }
-
-
-    private void createCircle() {
-        circle = new Circle(radius);
-        circle.setOnMouseClicked(new EntityClickedEventHandler());
-    }
-
-
+    /**
+     * Sets the center position of the object
+     * @param x the position of the object horizontally
+     * @param y the position of the object vertically
+     */
     public void setCenter(int x, int y) {
-        circle.setCenterX(x);
-        circle.setCenterY(y);
+        setCenterX(x);
+        setCenterY(y);
     }
 
-    public void setColor(Paint color) {
-        circle.setFill(color);
+    /**
+     * Initiates the falling animation for entity
+     */
+    public void fall() {
+        TranslateTransition animation = new TranslateTransition(Duration.seconds(3));
+        animation.setNode(this);
+        animation.setByY(1920);
+        animation.setCycleCount(TranslateTransition.INDEFINITE);
+        animation.setRate(speed / 10.0);
+        animation.play();
     }
 
-    class EntityClickedEventHandler implements EventHandler<MouseEvent> {
+    private class EntityClickedEventHandler implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent e) {
-            circle.setVisible(false);
+            setVisible(false);
+            MainApp.player.addScore(score);
+            System.out.println("Score: " + MainApp.player.getScore());
         }
     }
 }
