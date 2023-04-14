@@ -7,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.util.Duration;
@@ -27,6 +26,8 @@ public class FallingEntity extends ImageView {
     private RotateTransition rotateTransition;
     private AnimationTimer collisionTimer;
     private static final double height = Screen.getPrimary().getBounds().getHeight();
+    private static final double width = Screen.getPrimary().getBounds().getWidth();
+    private static final double size = width / 12.8;
 
 
     /**
@@ -40,7 +41,6 @@ public class FallingEntity extends ImageView {
         super(apple);
         this.score = score;
         this.speed = speed;
-        double size = 200;
         setPreserveRatio(true);
         setFitWidth(size);
         setOnMouseClicked(new EntityClickedEventHandler());
@@ -125,6 +125,10 @@ public class FallingEntity extends ImageView {
         GameApp.apples.set(index, null);
         GameApp.apples.remove(index);
         GameApp.pane.getChildren().remove(this);
+    }
+
+    public static double getSize() {
+        return size;
     }
 
     /**

@@ -139,7 +139,7 @@ public class GameApp {
      */
     private static void addApple() {
         apples.add(new FallingEntity(pointsPerApple, fallSpeed));
-        apples.get(apples.size() - 1).setPosition((int)(Math.random() * width - 200), -250);
+        apples.get(apples.size() - 1).setPosition((int)(Math.random() * (width - FallingEntity.getSize())), -250);
         System.out.println(apples.get(apples.size() - 1).getX());
         pane.getChildren().add(apples.get(apples.size() - 1));
         apples.get(apples.size() - 1).fall(floor);
