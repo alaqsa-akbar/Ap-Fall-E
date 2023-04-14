@@ -7,7 +7,9 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 /**
@@ -24,6 +26,7 @@ public class FallingEntity extends ImageView {
     private TranslateTransition translateTransition;
     private RotateTransition rotateTransition;
     private AnimationTimer collisionTimer;
+    private static final double height = Screen.getPrimary().getBounds().getHeight();
 
 
     /**
@@ -64,7 +67,7 @@ public class FallingEntity extends ImageView {
         // Translation (the falling animation)
         translateTransition = new TranslateTransition(Duration.seconds(3));
         translateTransition.setNode(this);
-        translateTransition.setByY(1920);
+        translateTransition.setByY(height + 400);
         translateTransition.setCycleCount(TranslateTransition.INDEFINITE);
         translateTransition.setRate(speed / 10.0);
 
@@ -81,6 +84,9 @@ public class FallingEntity extends ImageView {
                 if (checkForCollision(floor)) {
                     System.out.println("Collision");
                     System.out.println("Final Score: " + Player.getScore());
+
+                    GameApp.gameOver();
+
                     Player.resetScore();
 
                     GameApp.timeline.setCycleCount(0);
