@@ -117,7 +117,7 @@ public class FallingEntity extends ImageView {
      * When called, the object is set to null and removed from the scene.
      * All processes are stopped to make it eligible for garbage collection.
      */
-    private void kill() {
+    public void kill() {
         stopProcesses();
 
         // Removes all instances of the object and sets it to null for garbage collection

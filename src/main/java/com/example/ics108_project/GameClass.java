@@ -21,8 +21,8 @@ public class GameClass extends Application {
     @Override
     public void start(Stage stage) {
         //Final Part (At the end)
-        Scene menuScene = mainMenuScene();
-        Scene gameScene = GameApp.gameScene();
+        Scene menuScene = mainMenuScene(stage);
+//        Scene gameScene = GameApp.gameScene();
 
         stage.setScene(menuScene);
 
@@ -46,7 +46,7 @@ public class GameClass extends Application {
     }
 
 
-    private static Scene mainMenuScene()
+    private static Scene mainMenuScene(Stage stage)
     {
         //Ziad's Part
         //Create Scene and return it to the start function
@@ -87,6 +87,11 @@ public class GameClass extends Application {
         startImage.setFitWidth(200);
         Button startButton = new Button("",startImage);
         startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        startButton.setOnAction(e -> {
+            stage.setScene(GameApp.gameScene());
+            GameApp.initiate();
+            stage.setFullScreen(true);
+        });
 
         //Quit Button
         ImageView quitImage = new ImageView("QuitButton.png");
