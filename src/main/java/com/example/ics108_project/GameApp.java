@@ -27,6 +27,8 @@ public class GameApp {
     private static final long initialGenerationSpeed = 2;
     private static final double initialFallSpeed = 10;
     private static final int pointsPerApple = 5;
+    private static final double fallAcceleration = 1.005;
+    private static final double generationAcceleration = 1.03;
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
@@ -67,8 +69,8 @@ public class GameApp {
     public static void initiate() {
         timeline = new Timeline(new KeyFrame(Duration.seconds(initialGenerationSpeed), event -> {
             addApple();
-            timeline.setRate(timeline.getRate() * 1.03);
-            fallSpeed *= 1.005;
+            timeline.setRate(timeline.getRate() * generationAcceleration);
+            fallSpeed *= fallAcceleration;
         }));
         addApple();
 
