@@ -29,7 +29,7 @@ public class GameClass extends Application {
         stage.setTitle("Ap-FALL-E");
 
         //Set the icon of the game
-        Image iconImage = new Image("com/example/ics108_project/AppleLogo.PNG");
+        Image iconImage = new Image("AppleLogoNoBG.PNG");
         stage.getIcons().add(iconImage);
 
         //Change dimensions
@@ -76,7 +76,9 @@ public class GameClass extends Application {
         mainPane.setTop(topBox);
 
 
-        //Add the buttons to the center
+        /*Add the buttons to the center
+            Start Button and Quit Button
+         */
 
         //Start Button
         ImageView startImage = new ImageView("StartButton.png");

@@ -56,11 +56,12 @@ public class FallingEntity extends Circle {
     }
 
     private class EntityClickedEventHandler implements EventHandler<MouseEvent> {
+
         @Override
         public void handle(MouseEvent e) {
             setVisible(false);
-            MainApp.player.addScore(score);
-            System.out.println("Score: " + MainApp.player.getScore());
+            //MainApp.player.addScore(score);
+            //System.out.println("Score: " + MainApp.player.getScore());
         }
     }
 }
