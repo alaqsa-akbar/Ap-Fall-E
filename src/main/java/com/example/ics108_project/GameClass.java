@@ -15,13 +15,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.File;
+import java.util.Objects;
 
 public class GameClass extends Application {
     @Override
     public void start(Stage stage) {
         //Final Part (At the end)
         Scene menuScene = mainMenuScene();
-        Scene gameScene = gameScene();
+        Scene gameScene = GameApp.gameScene();
 
         stage.setScene(menuScene);
 
@@ -29,7 +30,8 @@ public class GameClass extends Application {
         stage.setTitle("Ap-FALL-E");
 
         //Set the icon of the game
-        Image iconImage = new Image("com/example/ics108_project/AppleLogo.PNG");
+        Image iconImage = new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("/com/example/ics108_project/AppleLogo.PNG")));
         stage.getIcons().add(iconImage);
 
         //Change dimensions
@@ -68,7 +70,8 @@ public class GameClass extends Application {
         //Set background image
         Image image = new Image("Background.jpg");
         BackgroundSize backgroundSize = new BackgroundSize(1.0,1.0,true,true,false,false);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        BackgroundImage backgroundImage = new BackgroundImage(
+                image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         mainPane.setBackground(background);
 
@@ -107,17 +110,6 @@ public class GameClass extends Application {
 
         return new Scene(mainPane);
 
-    }
-
-
-    private static Scene gameScene()
-    {
-        //Al Aqsa's Part
-
-        Pane pane = new Pane();
-        Scene gameScene = new Scene(pane);
-
-        return gameScene;
     }
 
     private static ImageView backGroundMusic()
