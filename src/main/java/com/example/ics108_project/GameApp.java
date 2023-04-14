@@ -27,8 +27,8 @@ public class GameApp {
     private static final long initialGenerationSpeed = 2;
     private static final double initialFallSpeed = 10;
     private static final int pointsPerApple = 5;
-    private static final double fallAcceleration = 1.005;
-    private static final double generationAcceleration = 1.03;
+    private static final double fallAcceleration = 1.02;
+    private static final double generationAcceleration = 1.05;
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;

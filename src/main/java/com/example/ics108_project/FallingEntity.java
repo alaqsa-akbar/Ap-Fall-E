@@ -47,6 +47,14 @@ public class FallingEntity extends ImageView {
     }
 
     /**
+     * Method to get the size (width of the {@code FallingEntity})
+     * @return the width of the {@code FallingEntity}
+     */
+    public static double getSize() {
+        return size;
+    }
+
+    /**
      * Sets the position of the object
      * @param x the position of the object horizontally
      * @param y the position of the object vertically
@@ -125,10 +133,6 @@ public class FallingEntity extends ImageView {
         GameApp.apples.set(index, null);
         GameApp.apples.remove(index);
         GameApp.pane.getChildren().remove(this);
-    }
-
-    public static double getSize() {
-        return size;
     }
 
     /**
