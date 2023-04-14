@@ -1,21 +1,18 @@
 package com.example.ics108_project;
 
 public class Player {
-    int score;
+    private static int score;
 
-    public Player() {
-        this.score = 0;
+    public static void addScore(int score) {
+        Player.score += score;
     }
 
-    public void addScore(int score) {
-        this.score += score;
-    }
-
-    public int getScore() {
+    public static int getScore() {
         return score;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public static void resetScore() {
+        score = 0;
     }
 }
+
