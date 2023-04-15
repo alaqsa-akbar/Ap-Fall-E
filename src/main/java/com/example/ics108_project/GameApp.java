@@ -2,19 +2,19 @@ package com.example.ics108_project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 
 /**
@@ -34,8 +34,12 @@ public class GameApp {
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
+    private static final double rectangleHeight = 50;
     private static Label scoreLabel;
     private static Button resetButton;
+    private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
+    private static final MediaPlayer losingMusic = MainMenu.getMediaPlayer("PacManDeath.mp3");
+    private static final ImageView musicImage = MainMenu.backGroundMusic();
 
     /**
      * Method to get the game's main scene. The scene contains a pane with a floor.
@@ -46,7 +50,7 @@ public class GameApp {
     public static Scene gameScene() {
         floor = new Rectangle();
         floor.setWidth(width);
-        floor.setHeight(100);
+        floor.setHeight(rectangleHeight);
         floor.setY(height);
         floor.setX(0);
         floor.setFill(Color.TRANSPARENT);
@@ -60,11 +64,10 @@ public class GameApp {
         Background background = new Background(backgroundImage);
         pane.setBackground(background);
 
-        ImageView backGroundMusic = MainMenu.backGroundMusic();
-        BorderPane musicButton = new BorderPane();
-        musicButton.setTop(backGroundMusic);
-        BorderPane.setAlignment(backGroundMusic, Pos.TOP_RIGHT);
-        pane.getChildren().add(backGroundMusic);
+
+
+        musicImage.setX(width - musicImage.getFitWidth());
+        pane.getChildren().add(musicImage);
 
         return new Scene(pane);
     }
@@ -83,6 +86,9 @@ public class GameApp {
 
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        musicImage.setImage(new Image("musicNoBG.png"));
+        backGroundMusic.play();
     }
 
     /**
@@ -97,9 +103,13 @@ public class GameApp {
 
     /**
      * Method that renders the game over screen. It provides a label of the final
-     * score and an option to reset and play again.
+     * score and an option to reset and play again. The method plays the losing music and stops the game music
      */
     public static void gameOver() {
+
+        backGroundMusic.stop();
+        losingMusic.play();
+
         opacityRectangle = new Rectangle();
         opacityRectangle.setFill(Color.BLACK);
         opacityRectangle.setOpacity(0.5);
@@ -109,25 +119,50 @@ public class GameApp {
         opacityRectangle.setY(0);
         pane.getChildren().add(opacityRectangle);
 
-        scoreLabel = new Label("Score: " + Player.getScore());
-        scoreLabel.setFont(Font.font(40));
-        scoreLabel.layoutXProperty().bind(pane.widthProperty().subtract(scoreLabel.widthProperty()).divide(2));
-        scoreLabel.layoutYProperty().bind(pane.heightProperty().subtract(scoreLabel.heightProperty()).divide(2));
-        pane.getChildren().add(scoreLabel);
 
-        resetButton = new Button("Reset");
+
+        scoreLabel = new Label("Score: " + Player.getScore());
+        scoreLabel.setFont(Font.font("Rockwell Extra Bold",40));
+        Rectangle scoreBox =
+                new Rectangle(350, 100, Paint.valueOf("#EBA709"));
+        scoreBox.setArcHeight(10);
+        scoreBox.setArcWidth(10);
+
+        StackPane boxAndScore = new StackPane(scoreBox,scoreLabel);
+        boxAndScore.layoutXProperty().bind(pane.widthProperty().subtract(boxAndScore.widthProperty()).divide(2));
+        boxAndScore.layoutYProperty().bind(pane.heightProperty().subtract(boxAndScore.heightProperty()).divide(4));
+        pane.getChildren().add(boxAndScore);
+
+
+        Button menuButton = MainMenu.createButton("menu.png", 200, 100);
+        menuButton.setOnAction(e ->
+                {
+                    GameClass.stage.setScene(MainMenu.mainMenuScene());
+                    GameClass.stage.setFullScreen(true);
+                    MainMenu.mediaPlayer.seek(Duration.ZERO);
+                    MainMenu.mediaPlayer.play();
+                }
+        );
+
+        resetButton = MainMenu.createButton("reset.png",200,100);
+
+
+        VBox buttons = new VBox(resetButton, menuButton);
+        buttons.layoutXProperty().bind(pane.widthProperty().subtract(buttons.widthProperty()).divide(2));
+        buttons.layoutYProperty().bind(pane.heightProperty().subtract(buttons.heightProperty()).divide(2));
+        pane.getChildren().add(buttons);
+
         resetButton.setOnAction(e -> {
-            pane.getChildren().remove(opacityRectangle);
-            opacityRectangle = null;
-            pane.getChildren().remove(scoreLabel);
+            opacityRectangle.setOpacity(0);
+            pane.getChildren().removeAll(opacityRectangle,boxAndScore,buttons);
             scoreLabel = null;
-            pane.getChildren().remove(resetButton);
             resetButton = null;
+            opacityRectangle = null;
             clear();
             initiate();
         });
-        pane.getChildren().add(resetButton);
     }
+
 
     /**
      * Method to clear all elements on screen. Main purpose is to call when player

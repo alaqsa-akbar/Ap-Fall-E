@@ -13,21 +13,20 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 
 public class MainMenu {
-    private static MediaPlayer mediaPlayer;
+    final static MediaPlayer mediaPlayer = getMediaPlayer("SuperMario.mp3");
     private static ImageView musicImageView;
 
     /**
      * Creates the main menu scene with all the components found
      * The method returns the scene with the title , game buttons , music buttons and the app creator name
-     * @param stage is the main stage on which the application will run
      * @return the main menu scene that contains all the components
      */
-    static Scene mainMenuScene(Stage stage)
+    static Scene mainMenuScene()
     {
         //Creating main pane
         BorderPane mainPane = new BorderPane();
@@ -64,34 +63,32 @@ public class MainMenu {
 
 
         //Start Button
-        ImageView startImage = new ImageView("StartButton.png");
-        startImage.setFitHeight(110);
-        startImage.setFitWidth(200);
-        Button startButton = new Button("",startImage);
-        startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        Button startButton = createButton("StartButton.png",200, 110);
         startButton.setOnAction(e -> {
-            mediaPlayer.stop();
-            stage.setScene(GameApp.gameScene());
+            mediaPlayer.seek(Duration.ZERO);
+            GameClass.stage.setScene(GameApp.gameScene());
             GameApp.initiate();
-            stage.setFullScreen(true);
+            GameClass.stage.setFullScreen(true);
         });
 
+        //Scores Button
+        Button scoreButton = createButton("Score.png",200,110);
+        /*
+        REMEMBER TO ADD THE SCORE BUTTON ACTION EVENT WHICH OPENS TOP 5 SCORES
+        * */
+
         //Quit Button
-        ImageView quitImage = new ImageView("QuitButton.png");
-        quitImage.setFitHeight(90);
-        quitImage.setFitWidth(180);
-        Button quitButton = new Button("",quitImage);
-        quitButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        Button quitButton = createButton("QuitButton.png",180,90);
         quitButton.setOnAction(e -> Platform.exit());//Exit program when clicked
 
         //Add Buttons To Pane
-        VBox buttons = new VBox(startButton,quitButton);
+        VBox buttons = new VBox(startButton,scoreButton,quitButton);
         mainPane.setCenter(buttons);
         buttons.setAlignment(Pos.CENTER);
 
         Text aboutText = new Text("Ap-FALL-E ICS 108 Project by Al Aqsa Akbar and Ziad Al-Alami");
-        aboutText.setFill(Paint.valueOf("blue"));
-        aboutText.setFont(Font.font("Rockwell Extra Bold"));
+        aboutText.setFill(Paint.valueOf("cyan"));
+        aboutText.setFont(Font.font("Rockwell Extra Bold",30));
         mainPane.setBottom(aboutText);
         BorderPane.setAlignment(aboutText,Pos.BOTTOM_CENTER);
 
@@ -105,10 +102,7 @@ public class MainMenu {
      */
     static ImageView backGroundMusic()
     {
-        //Create a MediaPlayer object that plays the music and set autoplay to true with infinite repetition
-        File file = new File("src\\main\\resources\\SuperMario.mp3");
-        Media media = new Media(file.toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
+        //Plays the music and set autoplay to true with infinite repetition
         mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 
@@ -139,15 +133,32 @@ public class MainMenu {
 
         return musicImageView;
     }
+    /**
+     * Creates a MediaPlayer object that for any given resource in the directory
+     * @return the MediaPlayer object
+     */
+    static MediaPlayer getMediaPlayer(String mediaName)
+    {
+        File file = new File("src\\main\\resources\\" + mediaName);
+        Media media = new Media(file.toURI().toString());
+        return new MediaPlayer(media);
+    }
 
     /**
-     * Generates the sound effects of objects when clicked on
-     * @return the MediaPlayer object that plays the sound effects of the node
+     * Generates a button from the image and gives it some styling
+     * @param imageName the name of the image which the button is created from as in the directory
+     * @param width the desired width of the button
+     * @param height the desired height of the button
+     * @return a Button instance with the given image , width and height properties with CSS styling
      */
-    static MediaPlayer soundEffect()
+    static Button createButton(String imageName, int width, int height)
     {
-        File file = new File("src\\main\\resources\\AppleClickSound.mp3");
-        Media soundMedia = new Media(file.toURI().toString());
-        return new MediaPlayer(soundMedia);
+        ImageView imageView = new ImageView(imageName);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+        Button button = new Button("",imageView);
+        button.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        return button;
     }
+
 }

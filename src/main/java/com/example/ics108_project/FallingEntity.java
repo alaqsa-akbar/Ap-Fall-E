@@ -7,13 +7,11 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
-import java.io.File;
 
 /**
  * Class for objects that fall during the game. Objects can be
@@ -32,7 +30,7 @@ public class FallingEntity extends ImageView {
     private static final double height = Screen.getPrimary().getBounds().getHeight();
     private static final double width = Screen.getPrimary().getBounds().getWidth();
     private static final double size = width / 12.8;
-    private static final MediaPlayer soundEffect = MainMenu.soundEffect();
+    private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
 
 
     /**
@@ -161,7 +159,7 @@ public class FallingEntity extends ImageView {
             setVisible(false);
             Player.addScore(score);
             soundEffect.play();
-            soundEffect.setOnEndOfMedia(() -> soundEffect.stop());
+            soundEffect.setOnEndOfMedia(soundEffect::stop);
             System.out.println("Score: " + Player.getScore());
             kill();
         }

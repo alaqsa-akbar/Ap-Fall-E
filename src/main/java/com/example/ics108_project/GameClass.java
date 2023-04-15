@@ -11,10 +11,11 @@ import javafx.stage.Stage;
  * This class sets the scene and the title along with the icon and other stage controls
  */
 public class GameClass extends Application {
+    static Stage stage;
     @Override
-    public void start(Stage stage) {
-
-        Scene menuScene = MainMenu.mainMenuScene(stage);
+    public void start(Stage primaryStage) {
+        stage = primaryStage;
+        Scene menuScene = MainMenu.mainMenuScene();
         stage.setScene(menuScene);
 
         //Set the title as the name of the game application
