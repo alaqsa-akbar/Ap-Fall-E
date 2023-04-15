@@ -34,12 +34,13 @@ public class GameApp {
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
-    private static final double rectangleHeight = 10;
+    private static final double rectangleHeight = 20;
     private static Label scoreLabel;
     private static Button resetButton;
     private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
     private static final MediaPlayer losingMusic = MainMenu.getMediaPlayer("PacManDeath.mp3");
     private static final ImageView musicImage = MainMenu.backGroundMusic();
+    static Label scoreTracker;
 
     /**
      * Method to get the game's main scene. The scene contains a pane with a floor.
@@ -68,6 +69,16 @@ public class GameApp {
 
         musicImage.setX(width - musicImage.getFitWidth());
         pane.getChildren().add(musicImage);
+
+        StackPane scoreTrackPane = new StackPane();
+        Rectangle scoreTrackBox = new Rectangle(80,50,Paint.valueOf("#36D1A3"));
+        scoreTracker = new Label("Score : " + Player.getScore());
+        scoreTracker.setFont(Font.font("Rockwell Extra Bold",10));
+        scoreTracker.setTextFill(Paint.valueOf("black"));
+        scoreTrackPane.getChildren().addAll(scoreTrackBox,scoreTracker);
+        scoreTrackPane.setLayoutX(0);
+        scoreTrackPane.setLayoutY(0);
+        pane.getChildren().add(scoreTrackPane);
 
         return new Scene(pane);
     }
@@ -121,7 +132,6 @@ public class GameApp {
         pane.getChildren().add(opacityRectangle);
 
 
-
         scoreLabel = new Label("Score: " + Player.getScore());
         scoreLabel.setFont(Font.font("Rockwell Extra Bold",40));
         Rectangle scoreBox =
@@ -135,17 +145,10 @@ public class GameApp {
         pane.getChildren().add(boxAndScore);
 
 
-        Button menuButton = MainMenu.createButton("menu.png", 200, 100);
-        menuButton.setOnAction(e ->
-                {
-                    GameClass.stage.setScene(MainMenu.mainMenuScene());
-                    GameClass.stage.setFullScreen(true);
-                    MainMenu.mediaPlayer.seek(Duration.ZERO);
-                    MainMenu.mediaPlayer.play();
-                }
-        );
 
         resetButton = MainMenu.createButton("reset.png",200,100);
+        Button menuButton = MainMenu.createButton("menu.png", 200, 100);
+
 
 
         VBox buttons = new VBox(resetButton, menuButton);
@@ -159,9 +162,20 @@ public class GameApp {
             scoreLabel = null;
             resetButton = null;
             opacityRectangle = null;
+            scoreTracker.setText("Score: 0");
             clear();
             initiate();
         });
+        menuButton.setOnAction(e ->
+                {
+                    GameClass.stage.setScene(MainMenu.mainMenuScene());
+                    GameClass.stage.setFullScreen(true);
+                    MainMenu.mediaPlayer.seek(Duration.ZERO);
+                    MainMenu.mediaPlayer.play();
+                    pane.getChildren().clear();
+                    pane.getScene().setRoot(new Pane());
+                }
+        );
     }
 
 

@@ -94,11 +94,9 @@ public class FallingEntity extends ImageView {
             @Override
             public void handle(long l) {
                 if (checkForCollision(floor)) {
-                    System.out.println("Collision");
-                    System.out.println("Final Score: " + Player.getScore());
 
                     GameApp.gameOver();
-
+                    Player.getFinalScore();
                     Player.resetScore();
 
                     GameApp.timeline.setCycleCount(0);
@@ -158,9 +156,9 @@ public class FallingEntity extends ImageView {
         public void handle(MouseEvent e) {
             setVisible(false);
             Player.addScore(score);
+            GameApp.scoreTracker.setText("Score: " + Player.getScore());
             soundEffect.play();
             soundEffect.setOnEndOfMedia(soundEffect::stop);
-            System.out.println("Score: " + Player.getScore());
             kill();
         }
     }

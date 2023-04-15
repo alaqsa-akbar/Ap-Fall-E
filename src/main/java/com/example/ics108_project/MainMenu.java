@@ -3,24 +3,33 @@ package com.example.ics108_project;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.Scanner;
+
 
 public class MainMenu {
     final static MediaPlayer mediaPlayer = getMediaPlayer("SuperMario.mp3");
     private static ImageView musicImageView;
-
+    private static final double height = Screen.getPrimary().getBounds().getHeight();
+    private static final double width = Screen.getPrimary().getBounds().getWidth();
+    final static Background backGround = createBackGround();
     /**
      * Creates the main menu scene with all the components found
      * The method returns the scene with the title , game buttons , music buttons and the app creator name
@@ -54,11 +63,7 @@ public class MainMenu {
 
 
         //Set background image
-        Image image = new Image("Background.jpg");
-        BackgroundSize backgroundSize = new BackgroundSize(1.0,1.0,true,true,false,false);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        Background background = new Background(backgroundImage);
-        mainPane.setBackground(background);
+        mainPane.setBackground(backGround);
 
 
 
@@ -73,9 +78,13 @@ public class MainMenu {
 
         //Scores Button
         Button scoreButton = createButton("Score.png",200,110);
-        /*
-        REMEMBER TO ADD THE SCORE BUTTON ACTION EVENT WHICH OPENS TOP 5 SCORES
-        * */
+        scoreButton.setOnMouseClicked(e ->
+                {
+                    GameClass.stage.setScene(scoreScene());
+                    GameClass.stage.setFullScreen(true);
+                }
+
+        );
 
         //Quit Button
         Button quitButton = createButton("QuitButton.png",180,90);
@@ -159,6 +168,74 @@ public class MainMenu {
         Button button = new Button("",imageView);
         button.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
         return button;
+    }
+
+    private static Scene scoreScene()
+    {
+        Pane pane = new Pane();
+        pane.setBackground(backGround);
+        Rectangle opacityRectangle = new Rectangle();
+        opacityRectangle.setFill(Color.BLACK);
+        opacityRectangle.setOpacity(0.5);
+        opacityRectangle.setHeight(height);
+        opacityRectangle.setWidth(width);
+        opacityRectangle.setX(0);
+        opacityRectangle.setY(0);
+        pane.getChildren().add(opacityRectangle);
+
+        StackPane scoresBoard = new StackPane();
+        Rectangle scoreRectangle = new Rectangle(650,650,Paint.valueOf("#FCBA03"));
+        Scanner scoreScanner = Player.scoreFileScanner();
+        assert scoreScanner != null;
+        Label topScore = new Label("Top Score: " + scoreScanner.next() + "\n");
+        Label secondScore = new Label("Second Top Score: " + scoreScanner.next() +"\n");
+        Label thirdScore = new Label("Third Top Score: " + scoreScanner.next() + "\n");
+        Label fourthScore = new Label("Fourth Top Score: " + scoreScanner.next() + "\n");
+        Label fifthScore = new Label("Fifth Top Score: " + scoreScanner.next() + "\n");
+        Label clearScore = new Label("Clear the scores?");
+        VBox scoresBox = new VBox(topScore,secondScore,thirdScore,fourthScore,fifthScore,clearScore);
+        scoresBox.setAlignment(Pos.CENTER);
+        for(Node node : scoresBox.getChildren())
+            ((Label) node).setFont(Font.font("Rockwell Extra Bold",40));
+
+        scoresBoard.getChildren().addAll(scoreRectangle,scoresBox);
+
+        Button menuButton = createButton("menu.png",200,100);
+        menuButton.setOnMouseClicked(e ->
+        {
+        GameClass.stage.setScene(MainMenu.mainMenuScene());
+        GameClass.stage.setFullScreen(true);
+        });
+        Button yesClear = createButton("yes.png",200,100);
+        yesClear.setOnMouseClicked(e ->
+        {
+            Player.clearData();
+            topScore.setText("Top Score: 0");
+            secondScore.setText("Second Top Score: 0");
+            thirdScore.setText("Third Top Score: 0");
+            fourthScore.setText("Fourth Top Score: 0");
+            fifthScore.setText("Fifth Top Score: 0");
+        });
+        HBox buttonsBox = new HBox();
+        buttonsBox.getChildren().addAll(yesClear,menuButton);
+        buttonsBox.setAlignment(Pos.BASELINE_CENTER);
+        buttonsBox.setSpacing(200);
+
+        VBox allNodes = new VBox(scoresBoard,buttonsBox);
+        allNodes.layoutXProperty().bind(pane.widthProperty().subtract(allNodes.widthProperty()).divide(2));
+        allNodes.layoutYProperty().bind(pane.heightProperty().subtract(allNodes.heightProperty()).divide(2));
+        pane.getChildren().add(allNodes);
+
+        return new Scene(pane);
+    }
+
+    static Background createBackGround()
+    {
+        Image image = new Image("BackGround.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(1.0,1.0,true,true,false,false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        return new Background(backgroundImage);
     }
 
 }
