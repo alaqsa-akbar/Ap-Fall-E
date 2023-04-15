@@ -18,20 +18,24 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class MainMenu {
+    private static MediaPlayer mediaPlayer;
+    private static ImageView musicImageView;
 
     /**
-     * This method creates the main menu scene with all the components found
+     * Creates the main menu scene with all the components found
      * The method returns the scene with the title , game buttons , music buttons and the app creator name
      * @param stage is the main stage on which the application will run
      * @return the main menu scene that contains all the components
      */
     static Scene mainMenuScene(Stage stage)
     {
-        //Create the main pane
+        //Creating main pane
         BorderPane mainPane = new BorderPane();
 
-        //Making small panes to add to the big pane at the end
+        //Creating top box
         HBox topBox = new HBox();
+
+        //Making small panes to add to the big pane at the end
         topBox.setAlignment(Pos.TOP_RIGHT);
         topBox.setSpacing(420);
 
@@ -66,7 +70,7 @@ public class MainMenu {
         Button startButton = new Button("",startImage);
         startButton.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
         startButton.setOnAction(e -> {
-            musicImageView.get
+            mediaPlayer.stop();
             stage.setScene(GameApp.gameScene());
             GameApp.initiate();
             stage.setFullScreen(true);
@@ -101,10 +105,10 @@ public class MainMenu {
      */
     static ImageView backGroundMusic()
     {
-        //Create a MediaPlayer object that plays the music and set auto play to true with infinite repitition
+        //Create a MediaPlayer object that plays the music and set autoplay to true with infinite repetition
         File file = new File("src\\main\\resources\\SuperMario.mp3");
         Media media = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(Timeline.INDEFINITE);
 
@@ -113,7 +117,7 @@ public class MainMenu {
         Image musicOff = new Image("muteMusicNoBG.png");
 
         //Create an ImageView object that displays the image and the current status of the background music
-        ImageView musicImageView = new ImageView(musicImage);
+        musicImageView = new ImageView(musicImage);
         musicImageView.setFitWidth(70);
         musicImageView.setFitHeight(70);
         musicImageView.setStyle("-fx-cursor: hand;");
@@ -134,5 +138,16 @@ public class MainMenu {
         });
 
         return musicImageView;
+    }
+
+    /**
+     * Generates the sound effects of objects when clicked on
+     * @return the MediaPlayer object that plays the sound effects of the node
+     */
+    static MediaPlayer soundEffect()
+    {
+        File file = new File("src\\main\\resources\\AppleClickSound.mp3");
+        Media soundMedia = new Media(file.toURI().toString());
+        return new MediaPlayer(soundMedia);
     }
 }

@@ -2,6 +2,7 @@ package com.example.ics108_project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,10 +27,10 @@ public class GameApp {
     private static final double width = Screen.getPrimary().getBounds().getWidth();
     private static final double height = Screen.getPrimary().getBounds().getHeight();
     private static final long initialGenerationSpeed = 2;
-    private static final double initialFallSpeed = 10;
+    private static final double initialFallSpeed = 5;
     private static final int pointsPerApple = 5;
-    private static final double fallAcceleration = 1.005;
-    private static final double generationAcceleration = 1.03;
+    private static final double fallAcceleration = 1.02;
+    private static final double generationAcceleration = 1.05;
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
@@ -60,8 +61,9 @@ public class GameApp {
         pane.setBackground(background);
 
         ImageView backGroundMusic = MainMenu.backGroundMusic();
-        backGroundMusic.setLayoutX(width);
-        backGroundMusic.setLayoutY(height);
+        BorderPane musicButton = new BorderPane();
+        musicButton.setTop(backGroundMusic);
+        BorderPane.setAlignment(backGroundMusic, Pos.TOP_RIGHT);
         pane.getChildren().add(backGroundMusic);
 
         return new Scene(pane);
@@ -143,10 +145,12 @@ public class GameApp {
      * and drop it using {@code FallingEntity.fall()}
      */
     private static void addApple() {
-        apples.add(new FallingEntity(pointsPerApple, fallSpeed));
-        apples.get(apples.size() - 1).setPosition((int)(Math.random() * width), -250);
-        //System.out.println(apples.get(apples.size() - 1).getX());
-        pane.getChildren().add(apples.get(apples.size() - 1));
-        apples.get(apples.size() - 1).fall(floor);
+        FallingEntity fallingEntity = new FallingEntity(pointsPerApple,fallSpeed);
+        apples.add(fallingEntity);
+        fallingEntity.setPosition((int)(Math.random() * (width - FallingEntity.getSize())), -250);
+        System.out.println(fallingEntity.getX());
+        pane.getChildren().add(fallingEntity);
+        fallingEntity.fall(floor);
     }
+
 }

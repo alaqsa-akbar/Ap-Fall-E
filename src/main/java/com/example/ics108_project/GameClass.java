@@ -6,6 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * This class is the main class that runs the program and the application
+ * This class sets the scene and the title along with the icon and other stage controls
+ */
 public class GameClass extends Application {
     @Override
     public void start(Stage stage) {
