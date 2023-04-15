@@ -34,7 +34,7 @@ public class GameApp {
     private static double fallSpeed = initialFallSpeed;
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
-    private static final double rectangleHeight = 50;
+    private static final double rectangleHeight = 10;
     private static Label scoreLabel;
     private static Button resetButton;
     private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
@@ -108,6 +108,7 @@ public class GameApp {
     public static void gameOver() {
 
         backGroundMusic.stop();
+        losingMusic.seek(Duration.ZERO);
         losingMusic.play();
 
         opacityRectangle = new Rectangle();
