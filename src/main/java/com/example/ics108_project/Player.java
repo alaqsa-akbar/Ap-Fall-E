@@ -81,7 +81,10 @@ public class Player {
         try(PrintWriter printWriter = new PrintWriter(top5Score))
         {
             for(int i = 0; i < 5; i++)
+            {
                 printWriter.println(0);
+                top5ScoresArray[i] = 0;
+            }
         }
         catch(FileNotFoundException ex)
         {
