@@ -21,26 +21,40 @@ import java.util.ArrayList;
  * The main class to handle gameplay elements.
  */
 public class GameApp {
-    public static ArrayList<FallingEntity> apples = new ArrayList<>();
     public static Pane pane = new Pane();
-    public static Timeline timeline;
+
+    // Screen Dimensions
     private static final double width = Screen.getPrimary().getBounds().getWidth();
     private static final double height = Screen.getPrimary().getBounds().getHeight();
+
+    // Trackers
+    public static Timeline timeline;
+    public static ArrayList<FallingEntity> apples = new ArrayList<>();
+    public static Label scoreTracker;
+
+    // Generation speed
     private static final long initialGenerationSpeed = 2;
-    private static final double initialFallSpeed = 5;
-    private static final int pointsPerApple = 5;
-    private static final double fallAcceleration = 1.02;
     private static final double generationAcceleration = 1.05;
+
+    // Falling speed
+    private static final double initialFallSpeed = 5;
     private static double fallSpeed = initialFallSpeed;
+    private static final double fallAcceleration = 1.02;
+
+    private static final int pointsPerApple = 5;
+
+    // Floor
     private static Rectangle floor;
     private static Rectangle opacityRectangle;
-    private static final double rectangleHeight = 20;
+    private static final double floorHeight = 20;
+
+    // Display features
     private static Label scoreLabel;
     private static Button resetButton;
     private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
     private static final MediaPlayer losingMusic = MainMenu.getMediaPlayer("PacManDeath.mp3");
     private static final ImageView musicImage = MainMenu.backGroundMusic();
-    static Label scoreTracker;
+
 
     /**
      * Method to get the game's main scene. The scene contains a pane with a floor.
@@ -51,7 +65,7 @@ public class GameApp {
     public static Scene gameScene() {
         floor = new Rectangle();
         floor.setWidth(width);
-        floor.setHeight(rectangleHeight);
+        floor.setHeight(floorHeight);
         floor.setY(height);
         floor.setX(0);
         floor.setFill(Color.TRANSPARENT);
@@ -198,9 +212,7 @@ public class GameApp {
         FallingEntity fallingEntity = new FallingEntity(pointsPerApple,fallSpeed);
         apples.add(fallingEntity);
         fallingEntity.setPosition((int)(Math.random() * (width - FallingEntity.getSize())), -250);
-        System.out.println(fallingEntity.getX());
         pane.getChildren().add(fallingEntity);
         fallingEntity.fall(floor);
     }
-
 }

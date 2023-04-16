@@ -21,16 +21,23 @@ import javafx.util.Duration;
  * subclass of {@code ImageView}.
  */
 public class FallingEntity extends ImageView {
+    // Instance variables
     private final int score;
     private final double speed;
-    private static final Image apple = new Image("Applelogo.png");
+
+    // Screen Dimensions
+    private static final double height = Screen.getPrimary().getBounds().getHeight();
+    private static final double width = Screen.getPrimary().getBounds().getWidth();
+
+    // Animations
     private TranslateTransition translateTransition;
     private RotateTransition rotateTransition;
     private AnimationTimer collisionTimer;
-    private static final double height = Screen.getPrimary().getBounds().getHeight();
-    private static final double width = Screen.getPrimary().getBounds().getWidth();
-    private static final double size = width / 12.8;
+
+    // Display features
     private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
+    private static final Image apple = new Image("Applelogo.png");
+    private static final double size = width / 12.8;
 
 
     /**
@@ -94,7 +101,6 @@ public class FallingEntity extends ImageView {
             @Override
             public void handle(long l) {
                 if (checkForCollision(floor)) {
-
                     GameApp.gameOver();
                     Player.getFinalScore();
                     Player.resetScore();
