@@ -20,7 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
-import java.io.File;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -148,8 +148,7 @@ public class MainMenu {
      */
     static MediaPlayer getMediaPlayer(String mediaName)
     {
-        File file = new File("src\\main\\resources\\" + mediaName);
-        Media media = new Media(file.toURI().toString());
+        Media media = new Media(Objects.requireNonNull(MainMenu.class.getClassLoader().getResource(mediaName)).toExternalForm());
         return new MediaPlayer(media);
     }
 
@@ -231,7 +230,7 @@ public class MainMenu {
 
     static Background createBackGround()
     {
-        Image image = new Image("BackGround.jpg");
+        Image image = new Image("Background.jpg");
         BackgroundSize backgroundSize = new BackgroundSize(1.0,1.0,true,true,false,false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
