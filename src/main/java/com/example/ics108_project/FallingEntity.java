@@ -91,10 +91,11 @@ public class FallingEntity extends ImageView {
         translateTransition.setRate(speed / 10.0);
 
         // Rotation while falling
-        rotateTransition = new RotateTransition(Duration.seconds(3));
+        rotateTransition = new RotateTransition(Duration.seconds(6));
         rotateTransition.setNode(this);
-        rotateTransition.setByAngle(360);
+        rotateTransition.setByAngle(720);
         rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+        translateTransition.setRate(speed / 10.0);
 
         // Detects for collision with the floor
         collisionTimer = new AnimationTimer() {
