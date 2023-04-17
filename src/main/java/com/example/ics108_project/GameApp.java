@@ -174,7 +174,6 @@ public class GameApp {
 
         menuButton.setOnAction(e -> {
             GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane());
-            GameClass.stage.setFullScreen(true);
             MainMenu.mediaPlayer.seek(Duration.ZERO);
             MainMenu.mediaPlayer.play();
             pane.getChildren().clear();

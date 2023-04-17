@@ -23,6 +23,11 @@ import java.util.Objects;
 import java.util.Scanner;
 
 
+/**
+ * This class displays the main menu and all of its components such as the start, scores, and quit options
+ * This class also offers static objects and methods to help other classes such as {@code  GameApp} in reusing the code
+ * by entering specific parameters
+ */
 public class MainMenu {
     final static MediaPlayer mediaPlayer = getMediaPlayer("SuperMario.mp3");
     private static ImageView musicImageView;
@@ -146,22 +151,12 @@ public class MainMenu {
     }
 
     /**
-     * Generates a button from the image and gives it some styling
-     * @param imageName the name of the image which the button is created from as in the directory
-     * @param width the desired width of the button
-     * @param height the desired height of the button
-     * @return a Button instance with the given image , width and height properties with CSS styling
+     * Creates the scene in which the top 5 scores will be displayed
+     * and offering the player a chance to reset all scores
+     * The menu button returns the player to the main menu without any extra action
+     * The YES button clears all the top 5 scores data of the player, allowing the player to start from the beginning
+     * @return the scene in which the top 5 scores are displayed along with the objects mentioned
      */
-    static Button createButton(String imageName, int width, int height)
-    {
-        ImageView imageView = new ImageView(imageName);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
-        Button button = new Button("",imageView);
-        button.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
-        return button;
-    }
-
     private static Pane scorePane()
     {
         Pane pane = new Pane();
@@ -218,6 +213,27 @@ public class MainMenu {
         return pane;
     }
 
+    /**
+     * Generates a button from the image and gives it some styling
+     * @param imageName the name of the image which the button is created from as in the directory
+     * @param width the desired width of the button
+     * @param height the desired height of the button
+     * @return a Button instance with the given image , width and height properties with CSS styling
+     */
+    static Button createButton(String imageName, int width, int height)
+    {
+        ImageView imageView = new ImageView(imageName);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+        Button button = new Button("",imageView);
+        button.setStyle("-fx-background-color: transparent;-fx-cursor: hand;");//Transparent
+        return button;
+    }
+
+    /**
+     * Creates the same background image for any scene, this method is supposed to reduce the number lines of code
+     * @return the BackGround instance that displays the background image
+     */
     static Background createBackGround()
     {
         Image image = new Image("Background.jpg");
