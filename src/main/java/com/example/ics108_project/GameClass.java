@@ -10,7 +10,13 @@ import javafx.stage.Stage;
  * This class sets the scene and the title along with the icon and other stage controls
  */
 public class GameClass extends Application {
+    //Set the stage as a static variable to allow other classes to access the stage and modify the  code
     static Stage stage;
+
+    /**
+     * The primary start method from the application class where we set the scene and icons and the title
+     * @param primaryStage is the primary stage in which the program will be displayed from the Application class
+     */
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
