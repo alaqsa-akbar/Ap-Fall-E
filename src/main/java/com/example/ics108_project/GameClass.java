@@ -14,7 +14,7 @@ public class GameClass extends Application {
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
-        Scene menuScene = MainMenu.mainMenuScene();
+        Scene menuScene = new Scene(MainMenu.mainMenuPane());
         stage.setScene(menuScene);
 
         //Set the title as the name of the game application
@@ -25,6 +25,7 @@ public class GameClass extends Application {
         stage.getIcons().add(iconImage);
 
         //Change dimensions
+        stage.setMaximized(true);
         stage.setFullScreen(true);
 
         //Show the stage

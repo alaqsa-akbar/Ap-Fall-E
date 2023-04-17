@@ -103,7 +103,7 @@ public class FallingEntity extends ImageView {
             public void handle(long l) {
                 if (checkForCollision(floor)) {
                     GameApp.gameOver();
-                    Player.getFinalScore();
+                    Player.updateFinalScore();
                     Player.resetScore();
 
                     GameApp.timeline.setCycleCount(0);

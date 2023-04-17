@@ -4,7 +4,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -30,12 +29,13 @@ public class MainMenu {
     private static final double height = Screen.getPrimary().getBounds().getHeight();
     private static final double width = Screen.getPrimary().getBounds().getWidth();
     final static Background backGround = createBackGround();
+
     /**
-     * Creates the main menu scene with all the components found
-     * The method returns the scene with the title , game buttons , music buttons and the app creator name
-     * @return the main menu scene that contains all the components
+     * Creates the main menu pane with all the components found
+     * The method returns the pane with the title , game buttons , music buttons and the app creator name
+     * @return the main menu pane that contains all the components
      */
-    static Scene mainMenuScene()
+    static Pane mainMenuPane()
     {
         //Creating main pane
         BorderPane mainPane = new BorderPane();
@@ -43,18 +43,16 @@ public class MainMenu {
         //Creating top box
         HBox topBox = new HBox();
 
-        //Making small panes to add to the big pane at the end
-        topBox.setAlignment(Pos.TOP_RIGHT);
-        topBox.setSpacing(420);
-
         //Add music and game name to top horizontal pane
         ImageView mainImage = new ImageView("ZiadAppleLogo.png");
-        mainImage.setFitHeight(350);
-        mainImage.setFitWidth(350);
+        mainImage.setPreserveRatio(true);
+        mainImage.setFitWidth(width / 4.3);
         ImageView musicImageView = backGroundMusic();
 
-        HBox.setHgrow(musicImageView, Priority.ALWAYS);
-        HBox.setHgrow(mainImage, Priority.ALWAYS);
+        //Making small panes to add to the big pane at the end
+        topBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.setSpacing((width - mainImage.getFitWidth()) / 2 - musicImageView.getFitWidth());
+
         topBox.getChildren().addAll(mainImage,musicImageView);
 
         //Add top pane to main pane
@@ -71,19 +69,14 @@ public class MainMenu {
         Button startButton = createButton("StartButton.png",200, 110);
         startButton.setOnAction(e -> {
             mediaPlayer.seek(Duration.ZERO);
-            GameClass.stage.setScene(GameApp.gameScene());
+            GameClass.stage.getScene().setRoot(GameApp.gameScene());
             GameApp.initiate();
-            GameClass.stage.setFullScreen(true);
         });
 
         //Scores Button
         Button scoreButton = createButton("Score.png",200,110);
         scoreButton.setOnMouseClicked(e ->
-                {
-                    GameClass.stage.setScene(scoreScene());
-                    GameClass.stage.setFullScreen(true);
-                }
-
+                GameClass.stage.getScene().setRoot(scorePane())
         );
 
         //Quit Button
@@ -102,11 +95,11 @@ public class MainMenu {
         BorderPane.setAlignment(aboutText,Pos.BOTTOM_CENTER);
 
 
-        return new Scene(mainPane);
+        return mainPane;
     }
 
     /**
-     * Creates background music for the main menu scene of the app
+     * Creates background music for the main menu pane of the app
      * @return an ImageView object that can turn on and off the music when clicked on
      */
     static ImageView backGroundMusic()
@@ -121,8 +114,8 @@ public class MainMenu {
 
         //Create an ImageView object that displays the image and the current status of the background music
         musicImageView = new ImageView(musicImage);
-        musicImageView.setFitWidth(70);
-        musicImageView.setFitHeight(70);
+        musicImageView.setPreserveRatio(true);
+        musicImageView.setFitWidth(width / 15.4);
         musicImageView.setStyle("-fx-cursor: hand;");
         mediaPlayer.setVolume(0.1);
 
@@ -169,7 +162,7 @@ public class MainMenu {
         return button;
     }
 
-    private static Scene scoreScene()
+    private static Pane scorePane()
     {
         Pane pane = new Pane();
         pane.setBackground(backGround);
@@ -201,10 +194,7 @@ public class MainMenu {
 
         Button menuButton = createButton("menu.png",200,100);
         menuButton.setOnMouseClicked(e ->
-        {
-        GameClass.stage.setScene(MainMenu.mainMenuScene());
-        GameClass.stage.setFullScreen(true);
-        });
+                GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane()));
         Button yesClear = createButton("yes.png",200,100);
         yesClear.setOnMouseClicked(e ->
         {
@@ -225,7 +215,7 @@ public class MainMenu {
         allNodes.layoutYProperty().bind(pane.heightProperty().subtract(allNodes.heightProperty()).divide(2));
         pane.getChildren().add(allNodes);
 
-        return new Scene(pane);
+        return pane;
     }
 
     static Background createBackGround()

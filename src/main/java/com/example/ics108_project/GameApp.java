@@ -2,7 +2,6 @@ package com.example.ics108_project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -62,7 +61,7 @@ public class GameApp {
      * initiated until {@code initiate()} is called.
      * @return the main {@code Scene} for the game
      */
-    public static Scene gameScene() {
+    public static Pane gameScene() {
         floor = new Rectangle();
         floor.setWidth(width);
         floor.setHeight(floorHeight);
@@ -79,8 +78,6 @@ public class GameApp {
         Background background = new Background(backgroundImage);
         pane.setBackground(background);
 
-
-
         musicImage.setX(width - musicImage.getFitWidth());
         pane.getChildren().add(musicImage);
 
@@ -94,7 +91,7 @@ public class GameApp {
         scoreTrackPane.setLayoutY(0);
         pane.getChildren().add(scoreTrackPane);
 
-        return new Scene(pane);
+        return pane;
     }
 
     /**
@@ -131,7 +128,6 @@ public class GameApp {
      * score and an option to reset and play again. The method plays the losing music and stops the game music
      */
     public static void gameOver() {
-
         backGroundMusic.stop();
         losingMusic.seek(Duration.ZERO);
         losingMusic.play();
@@ -145,7 +141,6 @@ public class GameApp {
         opacityRectangle.setY(0);
         pane.getChildren().add(opacityRectangle);
 
-
         scoreLabel = new Label("Score: " + Player.getScore());
         scoreLabel.setFont(Font.font("Rockwell Extra Bold",40));
         Rectangle scoreBox =
@@ -158,12 +153,8 @@ public class GameApp {
         boxAndScore.layoutYProperty().bind(pane.heightProperty().subtract(boxAndScore.heightProperty()).divide(4));
         pane.getChildren().add(boxAndScore);
 
-
-
         resetButton = MainMenu.createButton("reset.png",200,100);
         Button menuButton = MainMenu.createButton("menu.png", 200, 100);
-
-
 
         VBox buttons = new VBox(resetButton, menuButton);
         buttons.layoutXProperty().bind(pane.widthProperty().subtract(buttons.widthProperty()).divide(2));
@@ -180,16 +171,14 @@ public class GameApp {
             clear();
             initiate();
         });
-        menuButton.setOnAction(e ->
-                {
-                    GameClass.stage.setScene(MainMenu.mainMenuScene());
-                    GameClass.stage.setFullScreen(true);
-                    MainMenu.mediaPlayer.seek(Duration.ZERO);
-                    MainMenu.mediaPlayer.play();
-                    pane.getChildren().clear();
-                    pane.getScene().setRoot(new Pane());
-                }
-        );
+
+        menuButton.setOnAction(e -> {
+            GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane());
+            GameClass.stage.setFullScreen(true);
+            MainMenu.mediaPlayer.seek(Duration.ZERO);
+            MainMenu.mediaPlayer.play();
+            pane.getChildren().clear();
+        });
     }
 
 
