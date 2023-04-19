@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * The main class to handle gameplay elements.
  */
 public class GameApp {
-    public static Pane pane = new Pane();
+    public static Pane pane;
 
     // Screen Dimensions
     private static final double width = Screen.getPrimary().getBounds().getWidth();
@@ -62,6 +62,7 @@ public class GameApp {
      * @return the main {@code Scene} for the game
      */
     public static Pane gameScene() {
+        pane = new Pane();
         floor = new Rectangle();
         floor.setWidth(width);
         floor.setHeight(floorHeight);
@@ -173,10 +174,11 @@ public class GameApp {
         });
 
         menuButton.setOnAction(e -> {
+            clear();
+            pane = null;
             GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane());
             MainMenu.mediaPlayer.seek(Duration.ZERO);
             MainMenu.mediaPlayer.play();
-            pane.getChildren().clear();
         });
     }
 
