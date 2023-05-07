@@ -12,6 +12,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.util.Random;
+
 
 /**
  * Class for objects that fall during the game. Objects can be
@@ -22,8 +25,16 @@ import javafx.util.Duration;
  */
 public class FallingEntity extends ImageView {
     // Instance variables
-    private final int score;
+
+    // The score of a golden apple is variable every time
+    // so there is no instance variables that resemble its scores
+    //The golden apple score ranges from 10 to 20 based on a normal distribution
+    private final int score = 5;
     private final double speed;
+    private final boolean isGoldenApple;
+
+    private static final double GOLDEN_APPLE_RARITY = 0.075;
+
 
     // Screen Dimensions
     private static final double HEIGHT = Screen.getPrimary().getBounds().getHeight();
@@ -37,34 +48,32 @@ public class FallingEntity extends ImageView {
     // Display features
     private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
     private static final Image regularAppleImage = new Image("Applelogo.png");
-    private static final Image goldenAppleImage = new Image("GoldenApple.png");
-    private static final double size = WIDTH / 15;
+    private static final Image goldenAppleImage = new Image(new File("GoldenApple.png").toURI().toString());
+    private double size = WIDTH / 15;
 
-    // Score Metrics
-    private static final int REGULAR_APPLE_SCORE = 5;
-    private static final int GOLDEN_APPLE_SCORE = 15;
 
 
     /**
      * Constructs a {@code FallingEntity} with a circle shape
      * and a radius of 65, score of , and a speed
      * of {@code speed}. The apple can also be golden to get a score
-     * of 15
+     * of 15.
      * @param speed the speed of falling for the apple
-     * @param isGoldenApple boolean to determine whether the apple is golden
-     *                      and will have a larger score
      */
-    public FallingEntity(double speed, boolean isGoldenApple) {
+    public FallingEntity(double speed) {
         super();
-        if (isGoldenApple) {
+        isGoldenApple = Math.random() <= GOLDEN_APPLE_RARITY;
+
+        if (isGoldenApple)
             setImage(goldenAppleImage);
-            score = GOLDEN_APPLE_SCORE;
-        } else {
+
+        else
             setImage(regularAppleImage);
-            score = REGULAR_APPLE_SCORE;
-        }
+
         this.speed = speed;
         setPreserveRatio(true);
+        if(isGoldenApple)
+            size /= 2;
         setFitWidth(size);
         setOnMouseMoved(e -> this.setStyle("-fx-cursor: hand;"));
         setOnMouseClicked(new EntityClickedEventHandler());
@@ -74,7 +83,7 @@ public class FallingEntity extends ImageView {
      * Method to get the size (width of the {@code FallingEntity})
      * @return the width of the {@code FallingEntity}
      */
-    public static double getSize() {
+    public double getSize() {
         return size;
     }
 
@@ -170,7 +179,9 @@ public class FallingEntity extends ImageView {
         @Override
         public void handle(MouseEvent e) {
             setVisible(false);
-            Player.addScore(score);
+            if(isGoldenApple)
+                Player.addScore(Math.min((int) Math.abs(new Random().nextGaussian() * 5) + 10,20));
+            else Player.addScore(score);
             GameApp.scoreTracker.setText("Score: " + Player.getScore());
             soundEffect.play();
             soundEffect.setOnEndOfMedia(soundEffect::stop);

@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -79,10 +80,15 @@ public class MainMenu {
         });
 
         //Scores Button
-        Button scoreButton = createButton("Score.png",200,110);
+        Button scoreButton = createButton("Score.png",200,100);
         scoreButton.setOnMouseClicked(e ->
                 GameClass.stage.getScene().setRoot(scorePane())
         );
+
+        //How To Play Button
+        Button helpButton = createButton("help.png",200,110);
+        helpButton.setOnMouseClicked(e ->
+                GameClass.stage.getScene().setRoot(guidePane()));
 
         //Quit Button
         Button quitButton = createButton("QuitButton.png",180,90);
@@ -210,6 +216,40 @@ public class MainMenu {
         allNodes.layoutYProperty().bind(pane.heightProperty().subtract(allNodes.heightProperty()).divide(2));
         pane.getChildren().add(allNodes);
 
+        return pane;
+    }
+
+    private static Pane guidePane()
+    {
+        Pane pane = new Pane();
+        pane.setBackground(backGround);
+        Rectangle opacityRectangle = new Rectangle();
+        opacityRectangle.setFill(Color.BLACK);
+        opacityRectangle.setOpacity(0.5);
+        opacityRectangle.setHeight(height);
+        opacityRectangle.setWidth(width);
+        opacityRectangle.setX(0);
+        opacityRectangle.setY(0);
+        pane.getChildren().add(opacityRectangle);
+
+        Label instructions = new Label("Instructions On How To Play Ap-FALL-E");
+        Label mainIdea = new Label("You will have 50 falling apples from the top, try to click them all");
+        Label apples = new Label("There are two types of apples with different scores: Normal and Golden Apples");
+        Label normalApples = new Label("Normal apples are large red apples with 5 points each",
+                new ImageView(new File("Applelogo.png").toURI().toString()));
+        Label goldenApples = new Label("Golden apples are small golden apples with 10 - 20 points each ");
+        Label goldenPoints = new Label(
+                "Golden apples points are normally distributed with a mean of 10 and STD of 5",
+                new ImageView(new File("GoldenApple.png").toURI().toString()));
+        VBox textBox = new VBox(instructions,mainIdea,apples,normalApples,goldenApples,goldenPoints);
+
+        Rectangle rectangle = new Rectangle(textBox.getHeight(),textBox.getWidth());
+
+        for(Node node : textBox.getChildren())
+            ((Label) node).setFont(Font.getDefault());
+
+        StackPane stackPane = new StackPane(rectangle,textBox);
+        pane.getChildren().add(stackPane);
         return pane;
     }
 

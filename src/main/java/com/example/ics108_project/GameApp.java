@@ -2,6 +2,8 @@ package com.example.ics108_project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,13 +17,13 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * The main class to handle gameplay elements.
  */
 public class GameApp {
     public static Pane pane;
-    private static final double GOLDEN_APPLE_RARITY = 0.15;
     private static final int NUMBER_OF_APPLES_TO_SPAWN = 50;
 
     // Screen Dimensions
@@ -49,7 +51,8 @@ public class GameApp {
     private static final double floorHeight = 20;
 
     // Display features
-    private static Label scoreLabel;
+    private static VBox scoresBox;
+    private static Rectangle box;
     private static Button resetButton;
     private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
     private static final MediaPlayer losingMusic = MainMenu.getMediaPlayer("PacManDeath.mp3");
@@ -67,7 +70,7 @@ public class GameApp {
         floor = new Rectangle();
         floor.setWidth(WIDTH);
         floor.setHeight(floorHeight);
-        floor.setY(HEIGHT + 2 * FallingEntity.getSize());
+        floor.setY(HEIGHT + 2 * Screen.getPrimary().getBounds().getWidth() / 15);
         floor.setX(0);
         floor.setFill(Color.TRANSPARENT);
 
@@ -126,8 +129,8 @@ public class GameApp {
     }
 
     /**
-     * Method that renders the game over screen. It provides a label of the final
-     * score and an option to reset and play again. The method plays the losing music and stops the game music
+     * Method that renders the game over screen. It provides a label of the top 5
+     * scores and an option to reset and play again. The method plays the losing music and stops the game music
      */
     public static void gameOver() {
         backGroundMusic.stop();
@@ -148,14 +151,26 @@ public class GameApp {
         floorOpacity.setY(0);
         pane.getChildren().add(floorOpacity);
 
-        scoreLabel = new Label("Score: " + Player.getScore());
-        scoreLabel.setFont(Font.font("Rockwell Extra Bold",40));
-        Rectangle scoreBox =
-                new Rectangle(350, 100, Paint.valueOf("#EBA709"));
-        scoreBox.setArcHeight(10);
-        scoreBox.setArcWidth(10);
+        Scanner scoreScanner = Player.scoreFileScanner();
+        assert scoreScanner != null;
 
-        StackPane boxAndScore = new StackPane(scoreBox,scoreLabel);
+        Label topScore = new Label("Top Score: " + scoreScanner.next() + "\n");
+        Label secondScore = new Label("Second Top Score: " + scoreScanner.next() +"\n");
+        Label thirdScore = new Label("Third Top Score: " + scoreScanner.next() + "\n");
+        Label fourthScore = new Label("Fourth Top Score: " + scoreScanner.next() + "\n");
+        Label fifthScore = new Label("Fifth Top Score: " + scoreScanner.next() + "\n");
+
+        scoresBox = new VBox(topScore,secondScore,thirdScore,fourthScore,fifthScore);
+        scoresBox.setAlignment(Pos.CENTER);
+
+        for(Node node : scoresBox.getChildren())
+            ((Label) node).setFont(Font.font("Rockwell Extra Bold",20));
+
+        box = new Rectangle(350, 200, Paint.valueOf("#EBA709"));
+        box.setArcHeight(10);
+        box.setArcWidth(10);
+
+        StackPane boxAndScore = new StackPane(box,scoresBox);
         boxAndScore.layoutXProperty().bind(pane.widthProperty().subtract(boxAndScore.widthProperty()).divide(2));
         boxAndScore.layoutYProperty().bind(pane.heightProperty().subtract(boxAndScore.heightProperty()).divide(4));
         pane.getChildren().add(boxAndScore);
@@ -165,13 +180,13 @@ public class GameApp {
 
         VBox buttons = new VBox(resetButton, menuButton);
         buttons.layoutXProperty().bind(pane.widthProperty().subtract(buttons.widthProperty()).divide(2));
-        buttons.layoutYProperty().bind(pane.heightProperty().subtract(buttons.heightProperty()).divide(2));
+        buttons.layoutYProperty().bind(pane.heightProperty().subtract(buttons.heightProperty()).divide(1.5));
         pane.getChildren().add(buttons);
 
         resetButton.setOnAction(e -> {
             floorOpacity.setOpacity(0);
             pane.getChildren().removeAll(floorOpacity,boxAndScore,buttons);
-            scoreLabel = null;
+            box = null;
             resetButton = null;
             floorOpacity = null;
             scoreTracker.setText("Score: 0");
@@ -211,13 +226,12 @@ public class GameApp {
         if (numberOfApplesSpawned == NUMBER_OF_APPLES_TO_SPAWN)
             return;
 
-        boolean isGoldenApple = Math.random() <= GOLDEN_APPLE_RARITY;
-        FallingEntity fallingEntity = new FallingEntity(fallSpeed, isGoldenApple);
+        FallingEntity fallingEntity = new FallingEntity(fallSpeed);
 
         apples.add(fallingEntity);
         numberOfApplesSpawned++;
 
-        fallingEntity.setPosition((int)(Math.random() * (WIDTH - FallingEntity.getSize())), -250);
+        fallingEntity.setPosition((int)(Math.random() * (WIDTH - Screen.getPrimary().getBounds().getWidth() / 15)), -250);
 
         pane.getChildren().add(fallingEntity);
 
