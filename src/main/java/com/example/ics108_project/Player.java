@@ -160,27 +160,25 @@ public class Player {
         String documentsPath = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()
                 + "/My Games/Ap-Fall-E";
         File dir = new File(documentsPath);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
+        if (!dir.exists())
+            if (!dir.mkdirs())
                 return null;
-            }
-        }
         File file = new File(documentsPath + "/top5scores.txt");
 
         try {
             if (!file.exists()) {
-                if (!file.createNewFile()) {
+                if (!file.createNewFile())
                     return null;
-                }
+
 
                 // Writes the default values for the file
                 PrintWriter pw = new PrintWriter(file);
-                for (int i=0; i<5; i++) {
+                for (int i=0; i<5; i++)
                     pw.println(0);
-                }
                 pw.close();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return file;
