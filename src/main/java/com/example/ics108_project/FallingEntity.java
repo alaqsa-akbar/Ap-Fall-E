@@ -26,8 +26,8 @@ public class FallingEntity extends ImageView {
     private final double speed;
 
     // Screen Dimensions
-    private static final double height = Screen.getPrimary().getBounds().getHeight();
-    private static final double width = Screen.getPrimary().getBounds().getWidth();
+    private static final double HEIGHT = Screen.getPrimary().getBounds().getHeight();
+    private static final double WIDTH = Screen.getPrimary().getBounds().getWidth();
 
     // Animations
     private TranslateTransition translateTransition;
@@ -36,20 +36,33 @@ public class FallingEntity extends ImageView {
 
     // Display features
     private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
-    private static final Image apple = new Image("Applelogo.png");
-    private static final double size = width / 12.8;
+    private static final Image regularAppleImage = new Image("Applelogo.png");
+    private static final Image goldenAppleImage = new Image("GoldenApple.png");
+    private static final double size = WIDTH / 15;
+
+    // Score Metrics
+    private static final int REGULAR_APPLE_SCORE = 5;
+    private static final int GOLDEN_APPLE_SCORE = 15;
 
 
     /**
      * Constructs a {@code FallingEntity} with a circle shape
-     * and a radius of 65, score of {@code score}, and a speed
-     * of {@code speed}
-     * @param score the number of points the player will receive
-     *              if he clicks on the entity
+     * and a radius of 65, score of , and a speed
+     * of {@code speed}. The apple can also be golden to get a score
+     * of 15
+     * @param speed the speed of falling for the apple
+     * @param isGoldenApple boolean to determine whether the apple is golden
+     *                      and will have a larger score
      */
-    public FallingEntity(int score, double speed) {
-        super(apple);
-        this.score = score;
+    public FallingEntity(double speed, boolean isGoldenApple) {
+        super();
+        if (isGoldenApple) {
+            setImage(goldenAppleImage);
+            score = GOLDEN_APPLE_SCORE;
+        } else {
+            setImage(regularAppleImage);
+            score = REGULAR_APPLE_SCORE;
+        }
         this.speed = speed;
         setPreserveRatio(true);
         setFitWidth(size);
@@ -86,7 +99,7 @@ public class FallingEntity extends ImageView {
         // Translation (the falling animation)
         translateTransition = new TranslateTransition(Duration.seconds(3));
         translateTransition.setNode(this);
-        translateTransition.setByY(height + 400);
+        translateTransition.setByY(HEIGHT + 400);
         translateTransition.setCycleCount(TranslateTransition.INDEFINITE);
         translateTransition.setRate(speed / 10.0);
 
@@ -102,13 +115,8 @@ public class FallingEntity extends ImageView {
             @Override
             public void handle(long l) {
                 if (checkForCollision(floor)) {
-                    GameApp.gameOver();
-                    Player.updateFinalScore();
-                    Player.resetScore();
-
-                    GameApp.timeline.setCycleCount(0);
-                    GameApp.timeline.stop();
-                    GameApp.stopAll();
+                    kill();
+                    GameApp.checkForGameOver();
                 }
             }
         };
@@ -167,6 +175,8 @@ public class FallingEntity extends ImageView {
             soundEffect.play();
             soundEffect.setOnEndOfMedia(soundEffect::stop);
             kill();
+
+            GameApp.checkForGameOver();
         }
     }
 }
