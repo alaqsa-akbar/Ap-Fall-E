@@ -33,7 +33,7 @@ public class FallingEntity extends ImageView {
     private final double speed;
     private final boolean isGoldenApple;
 
-    private static final double GOLDEN_APPLE_RARITY = 0.075;
+    private static final double GOLDEN_APPLE_RARITY = 0.20;
 
 
     // Screen Dimensions

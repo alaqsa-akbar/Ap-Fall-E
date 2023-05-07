@@ -151,6 +151,7 @@ public class GameApp {
         floorOpacity.setY(0);
         pane.getChildren().add(floorOpacity);
 
+        Player.updateFinalScore();
         Scanner scoreScanner = Player.scoreFileScanner();
         assert scoreScanner != null;
 

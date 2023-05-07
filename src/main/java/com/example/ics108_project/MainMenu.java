@@ -18,7 +18,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.util.Objects;
 import java.util.Scanner;
@@ -80,22 +79,23 @@ public class MainMenu {
         });
 
         //Scores Button
-        Button scoreButton = createButton("Score.png",200,100);
+        Button scoreButton = createButton("Score.png",200,95);
         scoreButton.setOnMouseClicked(e ->
                 GameClass.stage.getScene().setRoot(scorePane())
         );
 
         //How To Play Button
-        Button helpButton = createButton("help.png",200,110);
+        Button helpButton = createButton("HelpNoBG.jpg", 220, 140);
         helpButton.setOnMouseClicked(e ->
                 GameClass.stage.getScene().setRoot(guidePane()));
 
+
         //Quit Button
-        Button quitButton = createButton("QuitButton.png",180,90);
+        Button quitButton = createButton("QuitButton.png",180,85);
         quitButton.setOnAction(e -> Platform.exit());//Exit program when clicked
 
         //Add Buttons To Pane
-        VBox buttons = new VBox(startButton,scoreButton,quitButton);
+        VBox buttons = new VBox(startButton,scoreButton,helpButton,quitButton);
         mainPane.setCenter(buttons);
         buttons.setAlignment(Pos.CENTER);
 
@@ -195,7 +195,7 @@ public class MainMenu {
 
         Button menuButton = createButton("menu.png",200,100);
         menuButton.setOnMouseClicked(e ->
-                GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane()));
+                GameClass.stage.getScene().setRoot(mainMenuPane()));
         Button yesClear = createButton("yes.png",200,100);
         yesClear.setOnMouseClicked(e ->
         {
@@ -221,6 +221,14 @@ public class MainMenu {
 
     private static Pane guidePane()
     {
+        ImageView goldenApple = new ImageView(new File("GoldenApple.png").toURI().toString());
+        goldenApple.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 18);
+        goldenApple.setFitHeight(Screen.getPrimary().getBounds().getHeight()/9);
+
+        ImageView apple = new ImageView("Applelogo.png");
+        apple.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 15);
+        apple.setFitHeight(Screen.getPrimary().getBounds().getHeight()/7);
+
         Pane pane = new Pane();
         pane.setBackground(backGround);
         Rectangle opacityRectangle = new Rectangle();
@@ -232,24 +240,32 @@ public class MainMenu {
         opacityRectangle.setY(0);
         pane.getChildren().add(opacityRectangle);
 
-        Label instructions = new Label("Instructions On How To Play Ap-FALL-E");
+        Label instructions = new Label("Instructions");
+        instructions.setTextFill(Paint.valueOf("#096AE0"));
         Label mainIdea = new Label("You will have 50 falling apples from the top, try to click them all");
         Label apples = new Label("There are two types of apples with different scores: Normal and Golden Apples");
-        Label normalApples = new Label("Normal apples are large red apples with 5 points each",
-                new ImageView(new File("Applelogo.png").toURI().toString()));
-        Label goldenApples = new Label("Golden apples are small golden apples with 10 - 20 points each ");
+        Label normalApples = new Label("Normal apples are large red apples with 5 points each",apple);
+        Label goldenApples = new Label("Golden apples are small golden apples with 10 - 20 points each",goldenApple);
         Label goldenPoints = new Label(
-                "Golden apples points are normally distributed with a mean of 10 and STD of 5",
-                new ImageView(new File("GoldenApple.png").toURI().toString()));
+                "Golden apples points are normally distributed with a mean of 10 and STD of 5");
         VBox textBox = new VBox(instructions,mainIdea,apples,normalApples,goldenApples,goldenPoints);
+        textBox.setAlignment(Pos.CENTER);
 
-        Rectangle rectangle = new Rectangle(textBox.getHeight(),textBox.getWidth());
+        Rectangle rectangle = new Rectangle(1000,550,Paint.valueOf("#FCBA03"));
 
         for(Node node : textBox.getChildren())
-            ((Label) node).setFont(Font.getDefault());
+            ((Label) node).setFont(Font.font("Rockwell Extra Bold",20));
 
         StackPane stackPane = new StackPane(rectangle,textBox);
-        pane.getChildren().add(stackPane);
+        stackPane.setAlignment(Pos.CENTER);
+
+        Button menu = createButton("menu.png",200,100);
+        menu.setOnMouseClicked(e -> GameClass.stage.getScene().setRoot(mainMenuPane()));
+        VBox allPane = new VBox(stackPane,menu);
+        allPane.layoutXProperty().bind(pane.widthProperty().subtract(allPane.widthProperty()).divide(2));
+        allPane.layoutYProperty().bind(pane.heightProperty().subtract(allPane.heightProperty()).divide(2));
+        pane.getChildren().add(allPane);
+
         return pane;
     }
 
@@ -262,7 +278,13 @@ public class MainMenu {
      */
     static Button createButton(String imageName, int width, int height)
     {
-        ImageView imageView = new ImageView(imageName);
+        ImageView imageView;
+        if(imageName.equals("HelpNoBG.jpg")) {
+            imageView = new ImageView(new File(imageName).toURI().toString());
+            imageView.setImage(new Image(new File(imageName).toURI().toString()));
+        }
+
+        else imageView = new ImageView(imageName);
         imageView.setFitWidth(width);
         imageView.setFitHeight(height);
         Button button = new Button("",imageView);
