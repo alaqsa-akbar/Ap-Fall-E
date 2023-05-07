@@ -20,31 +20,32 @@ import java.util.ArrayList;
  * The main class to handle gameplay elements.
  */
 public class GameApp {
-    public static Pane pane = new Pane();
+    public static Pane pane;
+    private static final double GOLDEN_APPLE_RARITY = 0.15;
+    private static final int NUMBER_OF_APPLES_TO_SPAWN = 50;
 
     // Screen Dimensions
-    private static final double width = Screen.getPrimary().getBounds().getWidth();
-    private static final double height = Screen.getPrimary().getBounds().getHeight();
+    private static final double WIDTH = Screen.getPrimary().getBounds().getWidth();
+    private static final double HEIGHT = Screen.getPrimary().getBounds().getHeight();
 
     // Trackers
     public static Timeline timeline;
     public static ArrayList<FallingEntity> apples = new ArrayList<>();
     public static Label scoreTracker;
+    private static int numberOfApplesSpawned = 0;
 
     // Generation speed
-    private static final long initialGenerationSpeed = 2;
-    private static final double generationAcceleration = 1.05;
+    private static final long INITIAL_GENERATION_SPEED = 2;
+    private static final double GENERATION_ACCELERATION = 1.05;
 
     // Falling speed
-    private static final double initialFallSpeed = 5;
-    private static double fallSpeed = initialFallSpeed;
-    private static final double fallAcceleration = 1.02;
-
-    private static final int pointsPerApple = 5;
+    private static final double INITIAL_FALL_SPEED = 5;
+    private static double fallSpeed = INITIAL_FALL_SPEED;
+    private static final double FALL_ACCELERATION = 1.03;
 
     // Floor
     private static Rectangle floor;
-    private static Rectangle opacityRectangle;
+    private static Rectangle floorOpacity;
     private static final double floorHeight = 20;
 
     // Display features
@@ -62,10 +63,11 @@ public class GameApp {
      * @return the main {@code Scene} for the game
      */
     public static Pane gameScene() {
+        pane = new Pane();
         floor = new Rectangle();
-        floor.setWidth(width);
+        floor.setWidth(WIDTH);
         floor.setHeight(floorHeight);
-        floor.setY(height);
+        floor.setY(HEIGHT + 2 * FallingEntity.getSize());
         floor.setX(0);
         floor.setFill(Color.TRANSPARENT);
 
@@ -78,7 +80,7 @@ public class GameApp {
         Background background = new Background(backgroundImage);
         pane.setBackground(background);
 
-        musicImage.setX(width - musicImage.getFitWidth());
+        musicImage.setX(WIDTH - musicImage.getFitWidth());
         pane.getChildren().add(musicImage);
 
         StackPane scoreTrackPane = new StackPane();
@@ -99,10 +101,10 @@ public class GameApp {
      * apples.
      */
     public static void initiate() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(initialGenerationSpeed), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(INITIAL_GENERATION_SPEED), event -> {
             addApple();
-            timeline.setRate(timeline.getRate() * generationAcceleration);
-            fallSpeed *= fallAcceleration;
+            timeline.setRate(timeline.getRate() * GENERATION_ACCELERATION);
+            fallSpeed *= FALL_ACCELERATION;
         }));
         addApple();
 
@@ -132,14 +134,19 @@ public class GameApp {
         losingMusic.seek(Duration.ZERO);
         losingMusic.play();
 
-        opacityRectangle = new Rectangle();
-        opacityRectangle.setFill(Color.BLACK);
-        opacityRectangle.setOpacity(0.5);
-        opacityRectangle.setHeight(height);
-        opacityRectangle.setWidth(width);
-        opacityRectangle.setX(0);
-        opacityRectangle.setY(0);
-        pane.getChildren().add(opacityRectangle);
+        timeline.setCycleCount(0);
+        timeline.stop();
+        stopAll();
+        numberOfApplesSpawned = 0;
+
+        floorOpacity = new Rectangle();
+        floorOpacity.setFill(Color.BLACK);
+        floorOpacity.setOpacity(0.5);
+        floorOpacity.setHeight(HEIGHT);
+        floorOpacity.setWidth(WIDTH);
+        floorOpacity.setX(0);
+        floorOpacity.setY(0);
+        pane.getChildren().add(floorOpacity);
 
         scoreLabel = new Label("Score: " + Player.getScore());
         scoreLabel.setFont(Font.font("Rockwell Extra Bold",40));
@@ -162,22 +169,26 @@ public class GameApp {
         pane.getChildren().add(buttons);
 
         resetButton.setOnAction(e -> {
-            opacityRectangle.setOpacity(0);
-            pane.getChildren().removeAll(opacityRectangle,boxAndScore,buttons);
+            floorOpacity.setOpacity(0);
+            pane.getChildren().removeAll(floorOpacity,boxAndScore,buttons);
             scoreLabel = null;
             resetButton = null;
-            opacityRectangle = null;
+            floorOpacity = null;
             scoreTracker.setText("Score: 0");
             clear();
             initiate();
         });
 
         menuButton.setOnAction(e -> {
+            clear();
+            pane = null;
             GameClass.stage.getScene().setRoot(MainMenu.mainMenuPane());
             MainMenu.mediaPlayer.seek(Duration.ZERO);
             MainMenu.mediaPlayer.play();
-            pane.getChildren().clear();
         });
+
+        Player.updateFinalScore();
+        Player.resetScore();
     }
 
 
@@ -189,7 +200,7 @@ public class GameApp {
         while (apples.size() != 0) {
             apples.get(0).kill();
         }
-        fallSpeed = initialFallSpeed;
+        fallSpeed = INITIAL_FALL_SPEED;
     }
 
     /**
@@ -197,10 +208,25 @@ public class GameApp {
      * and drop it using {@code FallingEntity.fall()}
      */
     private static void addApple() {
-        FallingEntity fallingEntity = new FallingEntity(pointsPerApple,fallSpeed);
+        if (numberOfApplesSpawned == NUMBER_OF_APPLES_TO_SPAWN)
+            return;
+
+        boolean isGoldenApple = Math.random() <= GOLDEN_APPLE_RARITY;
+        FallingEntity fallingEntity = new FallingEntity(fallSpeed, isGoldenApple);
+
         apples.add(fallingEntity);
-        fallingEntity.setPosition((int)(Math.random() * (width - FallingEntity.getSize())), -250);
+        numberOfApplesSpawned++;
+
+        fallingEntity.setPosition((int)(Math.random() * (WIDTH - FallingEntity.getSize())), -250);
+
         pane.getChildren().add(fallingEntity);
+
         fallingEntity.fall(floor);
+    }
+
+    public static void checkForGameOver(){
+        if (numberOfApplesSpawned == NUMBER_OF_APPLES_TO_SPAWN && apples.size() == 0){
+            gameOver();
+        }
     }
 }
