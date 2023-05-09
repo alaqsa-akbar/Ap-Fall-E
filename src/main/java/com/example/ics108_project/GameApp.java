@@ -25,6 +25,7 @@ import java.util.Scanner;
 public class GameApp {
     public static Pane pane;
     private static final int NUMBER_OF_APPLES_TO_SPAWN = 50;
+    private static final double GOLDEN_APPLE_RARITY = 0.20;
 
     // Screen Dimensions
     private static final double WIDTH = Screen.getPrimary().getBounds().getWidth();
@@ -47,11 +48,9 @@ public class GameApp {
 
     // Floor
     private static Rectangle floor;
-    private static Rectangle floorOpacity;
     private static final double floorHeight = 20;
 
-    // Display features
-    private static VBox scoresBox;
+    private static Rectangle gameOverScreen;
     private static Rectangle box;
     private static Button resetButton;
     private static final MediaPlayer backGroundMusic = MainMenu.mediaPlayer;
@@ -133,6 +132,7 @@ public class GameApp {
      * scores and an option to reset and play again. The method plays the losing music and stops the game music
      */
     public static void gameOver() {
+        // Stopping Background Processes
         backGroundMusic.stop();
         losingMusic.seek(Duration.ZERO);
         losingMusic.play();
@@ -142,15 +142,17 @@ public class GameApp {
         stopAll();
         numberOfApplesSpawned = 0;
 
-        floorOpacity = new Rectangle();
-        floorOpacity.setFill(Color.BLACK);
-        floorOpacity.setOpacity(0.5);
-        floorOpacity.setHeight(HEIGHT);
-        floorOpacity.setWidth(WIDTH);
-        floorOpacity.setX(0);
-        floorOpacity.setY(0);
-        pane.getChildren().add(floorOpacity);
+        // Creating Game Over Screen
+        gameOverScreen = new Rectangle();
+        gameOverScreen.setFill(Color.BLACK);
+        gameOverScreen.setOpacity(0.5);
+        gameOverScreen.setHeight(HEIGHT);
+        gameOverScreen.setWidth(WIDTH);
+        gameOverScreen.setX(0);
+        gameOverScreen.setY(0);
+        pane.getChildren().add(gameOverScreen);
 
+        // Displaying Score
         Player.updateFinalScore();
         Scanner scoreScanner = Player.scoreFileScanner();
         assert scoreScanner != null;
@@ -161,7 +163,8 @@ public class GameApp {
         Label fourthScore = new Label("Fourth Top Score: " + scoreScanner.next() + "\n");
         Label fifthScore = new Label("Fifth Top Score: " + scoreScanner.next() + "\n");
 
-        scoresBox = new VBox(topScore,secondScore,thirdScore,fourthScore,fifthScore);
+        // Display features
+        VBox scoresBox = new VBox(topScore, secondScore, thirdScore, fourthScore, fifthScore);
         scoresBox.setAlignment(Pos.CENTER);
 
         for(Node node : scoresBox.getChildren())
@@ -171,7 +174,7 @@ public class GameApp {
         box.setArcHeight(10);
         box.setArcWidth(10);
 
-        StackPane boxAndScore = new StackPane(box,scoresBox);
+        StackPane boxAndScore = new StackPane(box, scoresBox);
         boxAndScore.layoutXProperty().bind(pane.widthProperty().subtract(boxAndScore.widthProperty()).divide(2));
         boxAndScore.layoutYProperty().bind(pane.heightProperty().subtract(boxAndScore.heightProperty()).divide(4));
         pane.getChildren().add(boxAndScore);
@@ -184,12 +187,13 @@ public class GameApp {
         buttons.layoutYProperty().bind(pane.heightProperty().subtract(buttons.heightProperty()).divide(1.5));
         pane.getChildren().add(buttons);
 
+        // Even Handlers for Buttons
         resetButton.setOnAction(e -> {
-            floorOpacity.setOpacity(0);
-            pane.getChildren().removeAll(floorOpacity,boxAndScore,buttons);
+            gameOverScreen.setOpacity(0);
+            pane.getChildren().removeAll(gameOverScreen,boxAndScore,buttons);
             box = null;
             resetButton = null;
-            floorOpacity = null;
+            gameOverScreen = null;
             scoreTracker.setText("Score: 0");
             clear();
             initiate();
@@ -227,14 +231,14 @@ public class GameApp {
         if (numberOfApplesSpawned == NUMBER_OF_APPLES_TO_SPAWN)
             return;
 
-        FallingEntity fallingEntity = new FallingEntity(fallSpeed);
+        boolean isGoldenApple = Math.random() <= GOLDEN_APPLE_RARITY;
+        FallingEntity fallingEntity = new FallingEntity(fallSpeed, isGoldenApple);
 
         apples.add(fallingEntity);
         numberOfApplesSpawned++;
-
-        fallingEntity.setPosition((int)(Math.random() * (WIDTH - Screen.getPrimary().getBounds().getWidth() / 15)), -250);
-
         pane.getChildren().add(fallingEntity);
+
+        fallingEntity.setPosition((int)(Math.random() * (WIDTH - FallingEntity.getSize())), -250);
 
         fallingEntity.fall(floor);
     }

@@ -245,7 +245,7 @@ public class MainMenu {
         Label mainIdea = new Label("You will have 50 falling apples from the top, try to click them all");
         Label apples = new Label("There are two types of apples with different scores: Normal and Golden Apples");
         Label normalApples = new Label("Normal apples are large red apples with 5 points each",apple);
-        Label goldenApples = new Label("Golden apples are small golden apples with 10 - 20 points each",goldenApple);
+        Label goldenApples = new Label("Golden apples are small golden apples with 15 points each",goldenApple);
         Label goldenPoints = new Label(
                 "Golden apples points are normally distributed with a mean of 10 and STD of 5");
         VBox textBox = new VBox(instructions,mainIdea,apples,normalApples,goldenApples,goldenPoints);

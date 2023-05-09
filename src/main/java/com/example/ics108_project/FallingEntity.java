@@ -13,7 +13,6 @@ import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.Random;
 
 
 /**
@@ -25,16 +24,8 @@ import java.util.Random;
  */
 public class FallingEntity extends ImageView {
     // Instance variables
-
-    // The score of a golden apple is variable every time
-    // so there is no instance variables that resemble its scores
-    //The golden apple score ranges from 10 to 20 based on a normal distribution
-    private final int score = 5;
+    private final int score;
     private final double speed;
-    private final boolean isGoldenApple;
-
-    private static final double GOLDEN_APPLE_RARITY = 0.20;
-
 
     // Screen Dimensions
     private static final double HEIGHT = Screen.getPrimary().getBounds().getHeight();
@@ -49,7 +40,7 @@ public class FallingEntity extends ImageView {
     private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
     private static final Image regularAppleImage = new Image("Applelogo.png");
     private static final Image goldenAppleImage = new Image(new File("GoldenApple.png").toURI().toString());
-    private double size = WIDTH / 15;
+    private static final double size = WIDTH / 15;
 
 
 
@@ -60,20 +51,19 @@ public class FallingEntity extends ImageView {
      * of 15.
      * @param speed the speed of falling for the apple
      */
-    public FallingEntity(double speed) {
+    public FallingEntity(double speed, boolean isGoldenApple) {
         super();
-        isGoldenApple = Math.random() <= GOLDEN_APPLE_RARITY;
 
-        if (isGoldenApple)
+        if (isGoldenApple) {
             setImage(goldenAppleImage);
-
-        else
+            score = 15;
+        } else {
             setImage(regularAppleImage);
+            score = 5;
+        }
 
         this.speed = speed;
         setPreserveRatio(true);
-        if(isGoldenApple)
-            size /= 2;
         setFitWidth(size);
         setOnMouseMoved(e -> this.setStyle("-fx-cursor: hand;"));
         setOnMouseClicked(new EntityClickedEventHandler());
@@ -83,7 +73,7 @@ public class FallingEntity extends ImageView {
      * Method to get the size (width of the {@code FallingEntity})
      * @return the width of the {@code FallingEntity}
      */
-    public double getSize() {
+    public static double getSize() {
         return size;
     }
 
@@ -138,7 +128,7 @@ public class FallingEntity extends ImageView {
 
     /**
      * Method to stop all processes. These include the translation, the rotation,
-     * collision checker, and click detection.
+     * collision checker, and click detection. This is to help in the garbage collection
      */
     public void stopProcesses() {
         translateTransition.stop();
@@ -175,13 +165,10 @@ public class FallingEntity extends ImageView {
      * will be added to the player and the object will be killed.
      */
     private class EntityClickedEventHandler implements EventHandler<MouseEvent> {
-
         @Override
         public void handle(MouseEvent e) {
             setVisible(false);
-            if(isGoldenApple)
-                Player.addScore(Math.min((int) Math.abs(new Random().nextGaussian() * 5) + 10,20));
-            else Player.addScore(score);
+            Player.addScore(score);
             GameApp.scoreTracker.setText("Score: " + Player.getScore());
             soundEffect.play();
             soundEffect.setOnEndOfMedia(soundEffect::stop);
