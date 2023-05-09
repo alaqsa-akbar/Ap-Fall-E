@@ -69,7 +69,7 @@ public class GameApp {
         floor = new Rectangle();
         floor.setWidth(WIDTH);
         floor.setHeight(floorHeight);
-        floor.setY(HEIGHT + 2 * Screen.getPrimary().getBounds().getWidth() / 15);
+        floor.setY(HEIGHT + 2 * HEIGHT / 15);
         floor.setX(0);
         floor.setFill(Color.TRANSPARENT);
 

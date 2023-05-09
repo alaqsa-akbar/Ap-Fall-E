@@ -39,7 +39,7 @@ public class FallingEntity extends ImageView {
     // Display features
     private static final MediaPlayer soundEffect = MainMenu.getMediaPlayer("AppleClickSound.mp3");
     private static final Image regularAppleImage = new Image("Applelogo.png");
-    private static final Image goldenAppleImage = new Image(new File("GoldenApple.png").toURI().toString());
+    private static final Image goldenAppleImage = new Image("GoldenApple.png");
     private static final double size = WIDTH / 15;
 
 

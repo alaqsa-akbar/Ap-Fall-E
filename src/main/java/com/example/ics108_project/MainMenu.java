@@ -31,8 +31,8 @@ import java.util.Scanner;
 public class MainMenu {
     final static MediaPlayer mediaPlayer = getMediaPlayer("SuperMario.mp3");
     private static ImageView musicImageView;
-    private static final double height = Screen.getPrimary().getBounds().getHeight();
-    private static final double width = Screen.getPrimary().getBounds().getWidth();
+    private static final double HEIGHT = Screen.getPrimary().getBounds().getHeight();
+    private static final double WIDTH = Screen.getPrimary().getBounds().getWidth();
     final static Background backGround = createBackGround();
 
     /**
@@ -51,12 +51,12 @@ public class MainMenu {
         //Add music and game name to top horizontal pane
         ImageView mainImage = new ImageView("ZiadAppleLogo.png");
         mainImage.setPreserveRatio(true);
-        mainImage.setFitWidth(width / 4.3);
+        mainImage.setFitWidth(WIDTH / 4.3);
         ImageView musicImageView = backGroundMusic();
 
         //Making small panes to add to the big pane at the end
         topBox.setAlignment(Pos.TOP_RIGHT);
-        topBox.setSpacing((width - mainImage.getFitWidth()) / 2 - musicImageView.getFitWidth());
+        topBox.setSpacing((WIDTH - mainImage.getFitWidth()) / 2 - musicImageView.getFitWidth());
 
         topBox.getChildren().addAll(mainImage,musicImageView);
 
@@ -85,10 +85,10 @@ public class MainMenu {
         );
 
         //How To Play Button
-        Button helpButton = createButton("HelpNoBG.jpg", 220, 140);
+        Button helpButton = createButton("HelpNoBG.png", 220, 140);
         helpButton.setOnMouseClicked(e ->
-                GameClass.stage.getScene().setRoot(guidePane()));
-
+                GameClass.stage.getScene().setRoot(guidePane())
+        );
 
         //Quit Button
         Button quitButton = createButton("QuitButton.png",180,85);
@@ -126,7 +126,7 @@ public class MainMenu {
         //Create an ImageView object that displays the image and the current status of the background music
         musicImageView = new ImageView(musicImage);
         musicImageView.setPreserveRatio(true);
-        musicImageView.setFitWidth(width / 15.4);
+        musicImageView.setFitWidth(WIDTH / 15.4);
         musicImageView.setStyle("-fx-cursor: hand;");
         mediaPlayer.setVolume(0.1);
 
@@ -170,8 +170,8 @@ public class MainMenu {
         Rectangle opacityRectangle = new Rectangle();
         opacityRectangle.setFill(Color.BLACK);
         opacityRectangle.setOpacity(0.5);
-        opacityRectangle.setHeight(height);
-        opacityRectangle.setWidth(width);
+        opacityRectangle.setHeight(HEIGHT);
+        opacityRectangle.setWidth(WIDTH);
         opacityRectangle.setX(0);
         opacityRectangle.setY(0);
         pane.getChildren().add(opacityRectangle);
@@ -221,9 +221,9 @@ public class MainMenu {
 
     private static Pane guidePane()
     {
-        ImageView goldenApple = new ImageView(new File("GoldenApple.png").toURI().toString());
-        goldenApple.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 18);
-        goldenApple.setFitHeight(Screen.getPrimary().getBounds().getHeight()/9);
+        ImageView goldenApple = new ImageView("GoldenApple.png");
+        goldenApple.setFitWidth(WIDTH / 18);
+        goldenApple.setFitHeight(HEIGHT /9);
 
         ImageView apple = new ImageView("Applelogo.png");
         apple.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 15);
@@ -234,8 +234,8 @@ public class MainMenu {
         Rectangle opacityRectangle = new Rectangle();
         opacityRectangle.setFill(Color.BLACK);
         opacityRectangle.setOpacity(0.5);
-        opacityRectangle.setHeight(height);
-        opacityRectangle.setWidth(width);
+        opacityRectangle.setHeight(HEIGHT);
+        opacityRectangle.setWidth(WIDTH);
         opacityRectangle.setX(0);
         opacityRectangle.setY(0);
         pane.getChildren().add(opacityRectangle);
