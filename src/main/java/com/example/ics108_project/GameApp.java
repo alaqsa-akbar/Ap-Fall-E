@@ -157,6 +157,7 @@ public class GameApp {
         Scanner scoreScanner = Player.scoreFileScanner();
         assert scoreScanner != null;
 
+        Label currentScore = new Label("Final Score: " + Player.getScore() + "\n");
         Label topScore = new Label("Top Score: " + scoreScanner.next() + "\n");
         Label secondScore = new Label("Second Top Score: " + scoreScanner.next() +"\n");
         Label thirdScore = new Label("Third Top Score: " + scoreScanner.next() + "\n");
@@ -164,7 +165,8 @@ public class GameApp {
         Label fifthScore = new Label("Fifth Top Score: " + scoreScanner.next() + "\n");
 
         // Display features
-        VBox scoresBox = new VBox(topScore, secondScore, thirdScore, fourthScore, fifthScore);
+        VBox scoresBox = new VBox(currentScore,topScore, secondScore,
+                thirdScore, fourthScore, fifthScore);
         scoresBox.setAlignment(Pos.CENTER);
 
         for(Node node : scoresBox.getChildren())
